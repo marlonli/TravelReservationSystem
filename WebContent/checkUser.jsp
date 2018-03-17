@@ -13,12 +13,17 @@
 
 		try {
 			//Create a connection string
-			String url = "jdbc:mysql://cs539-spring2018.cmvm3ydsfzmo.us-west-2.rds.amazonaws.com:3306/cs539-spring2018";
+			String hostname = "cs539-spring2018.cmvm3ydsfzmo.us-west-2.rds.amazonaws.com";
+			String port = "3306";
+			String dbName = "cs539proj1";
+			String userName = "marlonli";
+			String password = "123123123";
+			String url = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName;
 			//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
 			Class.forName("com.mysql.jdbc.Driver");
 
 			//Create a connection to your DB
-			Connection con = DriverManager.getConnection(url, "marlonli", "123123123");
+			Connection con = DriverManager.getConnection(url, userName, password);
 			
 			//Create a SQL statement
 			Statement stmt = con.createStatement();
