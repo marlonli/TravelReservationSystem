@@ -30,12 +30,12 @@
 			//Get the combobox from the HelloWorld.jsp
 			
 			//Get parameters from the HTML form at the login.jsp
-		    String newEmail = request.getParameter("ru_email");
+		    String newEmail = request.getParameter("email");
 		    String newPswd = request.getParameter("password");
 		    
 		    //if it is an admin
 		    if((newEmail.equals("admin"))&&(newPswd.equals("admin"))){
-		    	session.setAttribute("user_name", "admin");
+		    	session.setAttribute("username", "admin");
 		    	%><script>
 		    	window.location.href = "admin-syssup/admin.jsp";
 		    	</script>
@@ -51,7 +51,7 @@
 				</script>
 				<% 
 			} else {
-				String str = "SELECT * FROM end_user e WHERE e.ru_email='" + newEmail + "' and e.password='" + newPswd + "'";
+				String str = "SELECT * FROM Accounts e WHERE e.email='" + newEmail + "' and e.password='" + newPswd + "'";
 	
 				//Run the query against the database.
 				ResultSet result = stmt.executeQuery(str);
@@ -64,8 +64,8 @@
 					//System.out.println(locked);
 
 					if( result.getObject("locked") == null ){
-						session.setAttribute("user_name", result.getString("user_name"));
-						session.setAttribute("user_email", newEmail);
+						session.setAttribute("username", result.getString("username"));
+						session.setAttribute("email", newEmail);
 						%>
 						<script> 
 					 	    //alert("login success!");
@@ -75,7 +75,7 @@
 					}
 					else if(result.getInt("locked")==0){
 						session.setAttribute("user_name", result.getString("user_name"));
-						session.setAttribute("user_email", newEmail);
+						session.setAttribute("email", newEmail);
 						session.setAttribute("user_type", "end_user");
 
 						%>

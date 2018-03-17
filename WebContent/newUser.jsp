@@ -73,7 +73,7 @@
         }
 
 		// 3. check if email already used
-	    String checkEmailStr = "SELECT * FROM end_user e WHERE e.ru_email='" + newEmail + "'";
+	    String checkEmailStr = "SELECT * FROM Accounts e WHERE e.email='" + newEmail + "'";
 		System.out.println(checkEmailStr);
 
 		ResultSet checkEmailResult = stmt.executeQuery(checkEmailStr);
@@ -113,9 +113,9 @@
 			return;			
 		}
 		
-		//Make an insert statement for the Sells table:
-		String insert = "INSERT INTO end_user (user_name, ru_email, password, rate, locked)"
-				+ " VALUES (?, ?, ?, 0, 0)";
+		//Make an insert statement for the Accounts table:
+		String insert = "INSERT INTO Accounts (username, email, password, level)"
+				+ " VALUES (?, ?, ?, 0)";
 		//Create a Prepared SQL statement allowing you to introduce the parameters of the query
 		PreparedStatement ps = con.prepareStatement(insert);
 		System.out.println(insert);
@@ -134,12 +134,13 @@
 
 		//out.print("new user has been created!");
 
-		session.setAttribute("user_name", newName);
-		session.setAttribute("user_email", newEmail);
+		session.setAttribute("username", newName);
+		session.setAttribute("email", newEmail);
 		%>
 		<script> 
-		    alert("Congratulation! Your new account is created!");
-	    	window.location.href = "driverOrPassenger.jsp";
+		    //alert("Congratulation! Your new account is created!");
+	    		System.out.println("account created");
+		    window.location.href = "customer/customerHomePage.jsp";
 		</script>
 		<%
 	} catch (Exception ex) {
@@ -148,7 +149,6 @@
 		%> 
 		<!-- if error, show the alert and go back to login page --> 
 		<script> 
-			
 		    alert("Sorry, something went wrong on our server, failed to create your account");
 		    window.location.href = "login.jsp?signup";
 		</script>
