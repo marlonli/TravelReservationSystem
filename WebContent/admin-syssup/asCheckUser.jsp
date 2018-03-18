@@ -19,7 +19,8 @@
 			String dbName = "cs539proj1";
 			String userName = "marlonli";
 			String password = "123123123";
-			String url = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName;			//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
+			String url = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName;			
+			//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
 			Class.forName("com.mysql.jdbc.Driver");
 
 			//Create a connection to your DB
@@ -33,17 +34,6 @@
 		    String newName = request.getParameter("inputUsername");
 		    String newPswd = request.getParameter("inputPassword");
 		    
-		    //if it is an admin
-		    if((newName.equals("admin"))&&(newPswd.equals("admin"))){
-		    	session.setAttribute("user_name", "admin");
-		    	session.setAttribute("user_type", "admin");
-		    	%><script>
-		    	window.location.href = "admin.jsp";
-		    	</script>
-		    	<%
-		    	return;
-		    }
-		    
 			if ((newName.equals(""))||(newPswd.equals(""))){
 				%>
 				<script> 
@@ -52,29 +42,23 @@
 				</script>
 				<% 
 			} else {
-				String str = "SELECT * FROM system_support s WHERE s.user_name='" + newName + "' and s.password='" + newPswd + "'";
+				String str = "SELECT * FROM Accounts a WHERE a.username='" + newName + "' and a.password='" + newPswd + "'" + " and a.level=1";
 	
 				//Run the query against the database.
 				ResultSet result = stmt.executeQuery(str);
-				System.out.println(str);
 	
 				if (result.next()) {
-					//out.print("login success! Welcome: ");
-					//out.print(result.getString("user_name"));
-					
-					session.setAttribute("user_name", result.getString("user_name"));
-					session.setAttribute("user_type", "syssup");
-					//session.setAttribute("user_email", newEmail);
+					session.setAttribute("username", result.getString("username"));
+					session.setAttribute("usertype", "admin");
+					System.out.println("Login success");
 					%>
 					<script> 
-					    //alert("login success!");
-				    	window.location.href = "systemSupport.jsp";
+				    	window.location.href = "adminHomePage.jsp";
 					</script>
 					<%
-					
 					//close the connection.
 				} else {
-					out.print("Login error");
+					System.out.print("Login error");
 					%>
 					<script> 
 				    	alert("User and password mismatch, please enter a valid email and password");

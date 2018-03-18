@@ -9,6 +9,9 @@
 <title>Logging in...</title>
 </head>
 <body>
+	<div class="progress progress-striped active">
+  	  <div class="progress-bar" style="width: 45%"></div>
+    </div>
 	<%
 
 		try {
@@ -30,20 +33,11 @@
 			//Get the combobox from the HelloWorld.jsp
 			
 			//Get parameters from the HTML form at the login.jsp
-		    String newEmail = request.getParameter("inputEmail");
+			
+		    String newUsername = request.getParameter("inputUsername");
 		    String newPswd = request.getParameter("inputPassword");
 		    
-		    //if it is an admin
-		    if((newEmail.equals("admin"))&&(newPswd.equals("admin"))){
-		    	session.setAttribute("username", "admin");
-		    	%><script>
-		    	window.location.href = "admin-syssup/admin.jsp";
-		    	</script>
-		    	<%
-		    	return;
-		    }
-		    
-			if ((newEmail.equals(""))&&(newPswd.equals(""))){
+			if ((newUsername.equals(""))&&(newPswd.equals(""))){
 				%>
 				<script> 
 				    alert("Please enter your email and password");
@@ -51,51 +45,34 @@
 				</script>
 				<% 
 			} else {
-				String str = "SELECT * FROM Accounts a WHERE a.email='" + newEmail + "' and a.password='" + newPswd + "'";
+				String str = "SELECT * FROM Accounts a WHERE a.username='" + newUsername + "' and a.password='" + newPswd + "'";
 	
 				//Run the query against the database.
 				ResultSet result = stmt.executeQuery(str);
 				//System.out.println(str);
 	
 				if (result.next()) {
-					//out.print("login success! Welcome: ");
-					//out.print(result.getString("user_name"));
-					//Integer locked = result.getObject("locked") != null ? result.getInt("locked") : null;
-					//System.out.println(locked);
-
-					if( result.getObject("locked") == null ){
+					if (result.getInt("level") == 1) {
+						// manager account
 						session.setAttribute("username", result.getString("username"));
-						session.setAttribute("email", newEmail);
-						%>
+						session.setAttribute("usertype", "admin");
+					%>
+						<script> 
+				    			window.location.href = "admin-syssup/adminHomePage.jsp";
+						</script>
+					<%
+					} else if (result.getInt("level") == 0){
+						session.setAttribute("username", result.getString("username"));
+						session.setAttribute("usertype", "customer");
+					%>
 						<script> 
 					 	    //alert("login success!");
-				    		window.location.href = "driverOrPassenger.jsp";
+				    			window.location.href = "customer/customerHomePage.jsp";
 						</script>
 					<%
 					}
-					else if(result.getInt("locked")==0){
-						session.setAttribute("user_name", result.getString("user_name"));
-						session.setAttribute("email", newEmail);
-						session.setAttribute("user_type", "end_user");
-
-						%>
-						<script> 
-					 	   //alert("login success!");
-				    		window.location.href = "driverOrPassenger.jsp";
-						</script>
-					<%						
-					}
-					else if (result.getInt("locked")==1){
-						%>
-						<script> 
-					    	alert("Sorry, the user is locked and cannot log in now");
-					    	window.location.href = "login.jsp";
-						</script>
-						<%						
-					}
-					//close the connection.
 				} else {
-					out.print("User not found");
+					System.out.print("User not found");
 					%>
 					<script> 
 				    	alert("User not found, or you entered a wrong password.");

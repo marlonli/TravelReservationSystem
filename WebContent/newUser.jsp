@@ -14,7 +14,9 @@
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
   crossorigin="anonymous"></script>
 <body>
-
+<div class="progress progress-striped active">
+  	  <div class="progress-bar" style="width: 45%"></div>
+</div>
 
 
 	<%
@@ -23,8 +25,6 @@
 	String newName = request.getParameter("inputUsername");
 	String newEmail = request.getParameter("inputEmail");
 	String newPswd = request.getParameter("inputPassword");
-	
-	
 	
 	try {
 
@@ -72,17 +72,17 @@
 			return;	
         }
 
-		// 3. check if email already used
-	    String checkEmailStr = "SELECT * FROM Accounts e WHERE e.email='" + newEmail + "'";
-		System.out.println(checkEmailStr);
+		// 3. check if username already used
+	    String checkUsernameStr = "SELECT * FROM Accounts a WHERE a.username='" + newName + "'";
+		System.out.println(checkUsernameStr);
 
-		ResultSet checkEmailResult = stmt.executeQuery(checkEmailStr);
-		if( checkEmailResult.next() ){
-			System.out.println("email used!");
+		ResultSet checkUsernameResult = stmt.executeQuery(checkUsernameStr);
+		if( checkUsernameResult.next() ){
+			System.out.println("Username used!");
 			%> 
 			<!-- if error, show the alert and go back to login page --> 
 			<script> 
-			    alert("Sorry, but the email you entered has been used");
+			    alert("Sorry, but the username you entered has been used");
 			    window.location.href = "login.jsp?signup";
 			</script>
 			<%
@@ -90,23 +90,23 @@
 		}
 		
 		// 4. check the password length
-		if( newPswd.length() < 8 ){
+		if( newPswd.length() < 6 ){
 			System.out.println("password too short!");
 			%> 
 			<!-- if error, show the alert and go back to login page --> 
 			<script> 
-			    alert("Sorry, the password should be at least 8 characters");
+			    alert("Sorry, the password should be at least 6 characters");
 			    window.location.href = "login.jsp?signup";
 			</script>
 			<%
 			return;			
 		}
-		else if( newPswd.length() > 45 ){
+		else if( newPswd.length() > 20 ){
 			System.out.println("password too long!");
 			%> 
 			<!-- if error, show the alert and go back to login page --> 
 			<script> 
-			    alert("Sorry, the password should be at most 45 characters");
+			    alert("Sorry, the password should be at most 20 characters");
 			    window.location.href = "login.jsp?signup";
 			</script>
 			<%
@@ -136,10 +136,9 @@
 
 		session.setAttribute("username", newName);
 		session.setAttribute("email", newEmail);
+		System.out.println("account created");
 		%>
-		<script> 
-		    //alert("Congratulation! Your new account is created!");
-	    		System.out.println("account created");
+		<script> 	    		
 		    window.location.href = "customer/customerHomePage.jsp";
 		</script>
 		<%

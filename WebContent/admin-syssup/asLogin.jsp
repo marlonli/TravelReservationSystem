@@ -18,7 +18,7 @@
 			<div class="panel-body">
 				<form class="login-form form-horizontal" method="post" action="asCheckUser.jsp">
 				  <fieldset>
-				    <legend>Manage Board</legend>
+				    <legend>Manager Login</legend>
 				    <div class="form-group">
 				      <label for="inputUsername" class="col-lg-2 control-label">Username</label>
 				      <div class="col-lg-10">
