@@ -17,10 +17,9 @@
 </head>
 <body>
 <%
-  String username = (String) session.getAttribute("username");
-  String ssn = "";
-  String password = (String) session.getAttribute("password");
-  System.out.println(username);
+String username = (String) session.getAttribute("username");
+String password = (String) session.getAttribute("password");
+String ssn = "";
   if (username == null) {
 %>
 <script type="text/javascript">
@@ -47,6 +46,15 @@
 
 		//Create a SQL statement
 		Statement stmt = con.createStatement();
+		
+		// Get password to fill up the form
+		String getPswd = "SELECT password FROM Accounts WHERE username='" + username + "';";
+		System.out.println(getPswd);
+		ResultSet passwordResult = stmt.executeQuery(getPswd);
+		if (passwordResult.next()) {
+			password = passwordResult.getString("password");
+			System.out.println(username + " " + password);
+		}
 		
 		// Check if the user has ssn
 		String checkSSN = "SELECT ssn FROM Managers m WHERE m.username='" + username + "'";
@@ -189,25 +197,22 @@ $(document).ready(function() {
 			
 			// Update password and SSN
 			if (newPswd != null && newSSN == null | "".equals(newSSN)) {
-				String updatePswd = "UPDATE Managers SET password='" + newPswd + "' WHERE username='" + username + "')" ;
+				String updatePswd = "UPDATE Accounts SET password='" + newPswd + "' WHERE username='" + username + "';";
+				stmt.executeUpdate(updatePswd);
 				System.out.println(updatePswd);
-				ResultSet result = stmt.executeQuery(updatePswd);
-				System.out.println(result);
+				%>
+				alert("Information updated!");
+				<%
 			} else if (newSSN != null && !"".equals(newSSN)) {
-				String addManager = "INSERT INTO Managers VALUES('" + newSSN + "', '" + username + "'";
+				String addManager = "INSERT INTO Managers VALUES('" + newSSN + "', '" + username + "';";
 				System.out.println(addManager);
-				ResultSet result = stmt.executeQuery(addManager);
-				System.out.println(result);
+				%>
+				alert("Information updated!");
+				<%
 			}
-			
 			con.close();
 		} catch (Exception e) {
 			System.out.println(e);
-			%>
-			<script> 
-			    alert("Sorry, something went wrong with our server");
-			</script>
-			<%
 		}
 		
 		%>
