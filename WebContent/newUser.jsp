@@ -4,6 +4,11 @@
 <%@ page import="java.io.*,java.util.*,java.sql.*"%>
 <%@ page import=" java.util.regex.Pattern"%>
 <%@ page import="javax.servlet.http.*,javax.servlet.*"%>
+<%@ page import="java.text.DateFormat" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Date" %>
+<%@ page import="java.util.Calendar" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -114,16 +119,21 @@
 		}
 		
 		//Make an insert statement for the Accounts table:
-		String insert = "INSERT INTO Accounts (username, email, password, level)"
-				+ " VALUES (?, ?, ?, 0)";
+		String insert = "INSERT INTO Accounts (username, email, password, level, creat_date)"
+				+ " VALUES (?, ?, ?, 0, ?)";
 		//Create a Prepared SQL statement allowing you to introduce the parameters of the query
 		PreparedStatement ps = con.prepareStatement(insert);
 		System.out.println(insert);
 
 		//Add parameters of the query. Start with 1, the 0-parameter is the INSERT statement itself
+		System.currentTimeMillis();
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		Date currentDate = new Date(System.currentTimeMillis());
+		String newDate = df.format(currentDate);
 		ps.setString(1, newName);
 		ps.setString(2, newEmail);
 		ps.setString(3, newPswd);
+		ps.setString(4, newDate);
 		//Run the query against the DB
 		
 		ps.executeUpdate();

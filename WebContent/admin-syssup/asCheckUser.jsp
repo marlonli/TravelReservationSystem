@@ -10,6 +10,9 @@
 </head>
 <body>
 <body>
+<div class="progress progress-striped active">
+  	  <div class="progress-bar" style="width: 45%"></div>
+</div>
 	<%
 
 		try {
@@ -50,6 +53,7 @@
 				if (result.next()) {
 					session.setAttribute("username", result.getString("username"));
 					session.setAttribute("usertype", "admin");
+					session.setAttribute("password", newPswd);
 					System.out.println("Login success");
 					%>
 					<script> 

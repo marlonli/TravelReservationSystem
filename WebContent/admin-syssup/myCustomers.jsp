@@ -43,7 +43,6 @@
 	        </li>
 	      </ul>
 	      
-	      
 	      <ul class="nav navbar-nav navbar-right">
 	        <li><a href="../login.jsp">Sign out</a></li>
 	      </ul>
@@ -51,6 +50,16 @@
 	  </div>
 	</nav>
 <div class="container">
+<table class="table table-striped table-hover ">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Column heading</th>
+      <th>Column heading</th>
+      <th>Column heading</th>
+    </tr>
+  </thead>
+  <tbody>
 </div>
 <script type="text/javascript">
 $(document).ready(function() {
