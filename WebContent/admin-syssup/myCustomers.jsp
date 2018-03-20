@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ page import="java.io.*,java.util.*,java.sql.*"%>
+<%@ page import="javax.servlet.http.*,javax.servlet.*"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -12,6 +14,10 @@
 <title>My Customers</title>
 </head>
 <body>
+<%
+  String username = (String) session.getAttribute("username");
+  System.out.println(username);
+%>
 <nav class="navbar navbar-inverse">
 	  <div class="container-fluid">
 	    <div class="navbar-header">
@@ -30,15 +36,15 @@
 	        <li class="dropdown">
 	          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Sales<span class="caret"></span></a>
 	          <ul class="dropdown-menu" role="menu">
-	            <li><a href="salesReport.jsp">Sales Report</a></li>
-	            <li><a href="revenuw.jsp">Revenue</a></li>
+	            <li><a href="sales/salesReport.jsp">Sales Report</a></li>
+	            <li><a href="sales/revenue.jsp">Revenue</a></li>
 	          </ul>
 	        </li>
 	        <li class="dropdown">
 	          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">Statistics <span class="caret"></span></a>
 	          <ul class="dropdown-menu" role="menu">
-	            <li><a href="reservations.jsp">Reservations</a></li>
-	            <li><a href="flights.jsp">Flights</a></li>
+	            <li><a href="../flightStatistics/reservations.jsp">Reservations</a></li>
+	            <li><a href="../flightStatistics/flights.jsp">Flights</a></li>
 	          </ul>
 	        </li>
 	      </ul>
@@ -50,16 +56,84 @@
 	  </div>
 	</nav>
 <div class="container">
-<table class="table table-striped table-hover ">
-  <thead>
-    <tr>
-      <th>#</th>
-      <th>Column heading</th>
-      <th>Column heading</th>
-      <th>Column heading</th>
-    </tr>
-  </thead>
-  <tbody>
+<h3>Customer Information</h3>
+<hr>
+<%
+	//Create a connection string
+	String hostname = "cs539-spring2018.cmvm3ydsfzmo.us-west-2.rds.amazonaws.com";
+	String port = "3306";
+	String dbName = "cs539proj1";
+	String userName = "marlonli";
+	String pswd = "123123123";
+	String url = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName;
+	//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
+	Class.forName("com.mysql.jdbc.Driver");
+	try {
+		//Create a connection to your DB
+		Connection con = DriverManager.getConnection(url, userName, pswd);
+			
+		//Create a SQL statement
+		Statement stmt = con.createStatement();
+			
+		//Make a SELECT query from the table Customers
+		String str = "SELECT * FROM Customers;";
+		//Run the query against the database.
+		ResultSet result = stmt.executeQuery(str);
+
+		//Make an HTML table to show the results in:
+		//out.print("<form action='editCustomerInfo.jsp' id='form-customers'>");
+		out.print("<table class='table table-striped table-hover' id='table-mycustomers'>");
+		out.print("<thead>");
+		out.print("<tr>");
+		//make a column
+		out.print("<th>#</th>");
+		out.print("<th>Account name</th>");
+		out.print("<th>First name</th>");
+		out.print("<th>Last name</th>");
+		out.print("</th>");
+		out.print("</tr>");
+		out.print("</thead>");
+			
+		//parse out the results
+		int rowNbr = 0;
+		out.print("<tbody>");
+		while (result.next()) {
+		//make a row
+		out.print("<tr>");
+		out.print("<tr id='" + result.getString("username") + "'>");
+		rowNbr++;
+		out.print("<td>");
+		out.print(rowNbr);
+		out.print("</td>");
+		
+		out.print("<td>");
+		out.print(result.getString("username"));
+		out.print("</td>");
+				
+		out.print("<td>");
+		out.print(result.getString("firstname"));
+		out.print("</td>");
+
+		out.print("<td>");
+		out.print(result.getString("lastname"));
+		out.print("</td>");
+				
+		//out.print("<td><input class='delete-button' type='button' value='delete' onclick='submitter("+ result.getString("ad_id") + ", 1)'/></td>");
+		//out.print("<td><input class='report-button' type='button' value='get-report' onclick='submitter("+ result.getString("ad_id") + ", 2)'/></td>");
+				
+		out.print("</tr>");
+				
+		}
+		out.print("</tbody>");
+		out.print("</table>");
+		out.print("</form>");
+		//close the connection.
+		con.close();
+
+		} catch (Exception e) {
+		}
+		%>
+
 </div>
 <script type="text/javascript">
 $(document).ready(function() {
@@ -69,10 +143,5 @@ $(document).ready(function() {
 	$('.nav:first > li > a[href="'+path+'"]').parent().addClass('active');
 })
 </script>
-
-<%
-  String username = (String) session.getAttribute("username");
-  System.out.println(username);
-%>
 </body>
 </html>

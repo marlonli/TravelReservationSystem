@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.io.*,java.util.*,java.sql.*"%>
-<%@ page import=" java.util.regex.Pattern"%>
 <%@ page import="javax.servlet.http.*,javax.servlet.*"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -34,13 +33,11 @@ String ssn = "";
   String dbName = "cs539proj1";
   String userName = "marlonli";
   String pswd = "123123123";
-  
+  String url = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName;
+  //Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
+  Class.forName("com.mysql.jdbc.Driver");
   // Update HTML content
   try {
-		String url = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName;
-		//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
-		Class.forName("com.mysql.jdbc.Driver");
-
 		//Create a connection to your DB
 		Connection con = DriverManager.getConnection(url, userName, pswd);
 
@@ -104,15 +101,15 @@ String ssn = "";
 	        <li class="dropdown">
 	          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Sales<span class="caret"></span></a>
 	          <ul class="dropdown-menu" role="menu">
-	            <li><a href="#">Sales Report</a></li>
-	            <li><a href="#">Revenue</a></li>
+	            <li><a href="sales/salesReport.jsp">Sales Report</a></li>
+	            <li><a href="sales/revenue.jsp">Revenue</a></li>
 	          </ul>
 	        </li>
 	        <li class="dropdown">
 	          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">Statistics <span class="caret"></span></a>
 	          <ul class="dropdown-menu" role="menu">
-	            <li><a href="#">Reservations</a></li>
-	            <li><a href="#">Flights</a></li>
+	            <li><a href="flightStatistics/reservations.jsp">Reservations</a></li>
+	            <li><a href="flightStatistics/flights.jsp">Flights</a></li>
 	          </ul>
 	        </li>
 	      </ul>
@@ -133,7 +130,7 @@ String ssn = "";
     <h3 class="panel-title">Manage your Account</h3>
   </div>
   <div class="panel-body form-horizontal">
-  <form class="register-form form-horizontal" method="post" action="adminHomePage.jsp">
+  <form class="register-form form-horizontal" method="post" action="resetPassword.jsp">
 	<fieldset>
      <div class="form-group">
        <label for="inputSSN" class="col-lg-2 control-label">SSN</label>
@@ -163,9 +160,6 @@ String ssn = "";
 	 </fieldset>
 	 </form>
   </div>
-    
-
-  
  </div>
 </div>
 </div>
@@ -176,51 +170,7 @@ $(document).ready(function() {
 	var pathname = window.location.pathname;
 	path = pathname.substr(pathname.lastIndexOf('/') + 1);
 	$('.nav:first > li > a[href="'+path+'"]').parent().addClass('active');
-	$('#buttonUpdate').click(function() {
-		<%
-		try {
-			String url = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName;
-			//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
-			Class.forName("com.mysql.jdbc.Driver");
-
-			//Create a connection to your DB
-			Connection con = DriverManager.getConnection(url, userName, pswd);
-
-			// Create a SQL statement
-			Statement stmt = con.createStatement();
-			
-			// Get new info
-			String newSSN = request.getParameter("inputSSN");
-			String newPswd = request.getParameter("inputPassword");
-			System.out.println("newPassword " + newPswd);
-			System.out.println("newSSN " + newSSN);
-			
-			// Update password and SSN
-			if (newPswd != null && newSSN == null | "".equals(newSSN)) {
-				String updatePswd = "UPDATE Accounts SET password='" + newPswd + "' WHERE username='" + username + "';";
-				stmt.executeUpdate(updatePswd);
-				System.out.println(updatePswd);
-				%>
-				alert("Information updated!");
-				<%
-			} else if (newSSN != null && !"".equals(newSSN)) {
-				String addManager = "INSERT INTO Managers VALUES('" + newSSN + "', '" + username + "';";
-				System.out.println(addManager);
-				%>
-				alert("Information updated!");
-				<%
-			}
-			con.close();
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-		
-		%>
-	});
 })
 </script>
-
-
 </body>
-
 </html>

@@ -6,37 +6,40 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+<link rel="stylesheet" type="text/css" href="css/main.css">
 <title>Logging in...</title>
 </head>
 <body>
-	<div class="progress progress-striped active">
-  	  <div class="progress-bar" style="width: 45%"></div>
-    </div>
-	<%
-
+<%
+	//Get parameters from the HTML form at the login.jsp
+	String newUsername = request.getParameter("inputUsername");
+	String newPswd = request.getParameter("inputPassword");
+	
+	out.print("<div class='progress progress-striped active'><div class='progress-bar' style='width: 45%'></div></div>");
+	out.print("<p>&nbsp&nbsp&nbsp&nbspLoading...</p>");
+	
+	//Create a connection string
+	String hostname = "cs539-spring2018.cmvm3ydsfzmo.us-west-2.rds.amazonaws.com";
+	String port = "3306";
+	String dbName = "cs539proj1";
+	String userName = "marlonli";
+	String password = "123123123";
+	String url = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName;
+	//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
+	Class.forName("com.mysql.jdbc.Driver");
+			
+	//Create a connection to your DB
+	Connection con = DriverManager.getConnection(url, userName, password);
+	//Create a SQL statement
+	Statement stmt = con.createStatement();
+	
 		try {
-			//Create a connection string
-			String hostname = "cs539-spring2018.cmvm3ydsfzmo.us-west-2.rds.amazonaws.com";
-			String port = "3306";
-			String dbName = "cs539proj1";
-			String userName = "marlonli";
-			String password = "123123123";
-			String url = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName;
-			//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
-			Class.forName("com.mysql.jdbc.Driver");
-
 			//Create a connection to your DB
-			Connection con = DriverManager.getConnection(url, userName, password);
-			
+			con = DriverManager.getConnection(url, userName, password);
 			//Create a SQL statement
-			Statement stmt = con.createStatement();
-			//Get the combobox from the HelloWorld.jsp
+			stmt = con.createStatement();
 			
-			//Get parameters from the HTML form at the login.jsp
-			
-		    String newUsername = request.getParameter("inputUsername");
-		    String newPswd = request.getParameter("inputPassword");
-		    
 			if ((newUsername.equals(""))&&(newPswd.equals(""))){
 				%>
 				<script> 
