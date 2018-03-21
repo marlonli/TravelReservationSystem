@@ -7,11 +7,14 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
+<link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="../css/main.css">
 <title>Travel Reservation System</title>
 </head>
 <body>
+<%
+  session.setAttribute("username", "");
+%>
 <div class="login-page container">
 	<div class="row login-form-container">
 		<div class="col-lg-6 col-lg-offset-3 panel panel-default">

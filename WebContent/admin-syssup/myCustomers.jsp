@@ -10,16 +10,25 @@
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
   crossorigin="anonymous"></script>
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-<link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
+<link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="../css/main.css">
 <title>My Customers</title>
 </head>
 <body>
 <%
   String username = (String) session.getAttribute("username");
   System.out.println(username);
+if (username == null || "".equals(username)) {
 %>
-<nav class="navbar navbar-inverse">
-	  <div class="container-fluid">
+<script type="text/javascript">
+  alert("Session expired, please login first");
+  window.location.href = "asLogin.jsp";
+</script>
+<%
+  } 
+  %>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+	  <div class="container">
 	    <div class="navbar-header">
 	      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-2">
 	        <span class="sr-only">Toggle navigation</span>
@@ -43,8 +52,8 @@
 	        <li class="dropdown">
 	          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">Statistics <span class="caret"></span></a>
 	          <ul class="dropdown-menu" role="menu">
-	            <li><a href="../flightStatistics/reservations.jsp">Reservations</a></li>
-	            <li><a href="../flightStatistics/flights.jsp">Flights</a></li>
+	            <li><a href="flightStatistics/reservations.jsp">Reservations</a></li>
+	            <li><a href="flightStatistics/flights.jsp">Flights</a></li>
 	          </ul>
 	        </li>
 	      </ul>
@@ -55,7 +64,7 @@
 	    </div>
 	  </div>
 	</nav>
-<div class="container">
+<div class="container container-padding">
 <h3>Customer Information</h3>
 <hr>
 <%

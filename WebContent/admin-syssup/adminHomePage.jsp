@@ -10,7 +10,7 @@
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
   crossorigin="anonymous"></script>
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-<link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
+<link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="../css/main.css">
 <title>Manager Home Page</title>
 </head>
@@ -19,7 +19,7 @@
 String username = (String) session.getAttribute("username");
 String password = (String) session.getAttribute("password");
 String ssn = "";
-  if (username == null) {
+  if (username == null || "".equals(username)) {
 %>
 <script type="text/javascript">
   alert("Session expired, please login first");
@@ -83,8 +83,8 @@ String ssn = "";
 	}
 %>
 
-  <nav class="navbar navbar-inverse">
-	  <div class="container-fluid">
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+	  <div class="container">
 	    <div class="navbar-header active">
 	      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-2">
 	        <span class="sr-only">Toggle navigation</span>
@@ -120,7 +120,7 @@ String ssn = "";
 	    </div>
 	  </div>
 	</nav>
-<div class="container">
+<div class="container container-padding">
 <h3>Hello,  ${username}</h3>
 <br>
 <div class="row">

@@ -10,7 +10,7 @@
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
   crossorigin="anonymous"></script>
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-<link rel="stylesheet" type="text/css" href="../../css/bootstrap.css">
+<link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="../../css/main.css">
 <title>Revenue</title>
 </head>
@@ -18,9 +18,17 @@
 <%
   String username = (String) session.getAttribute("username");
   System.out.println("username " + username);
+if (username == null || "".equals(username)) {
 %>
-<nav class="navbar navbar-inverse">
-	  <div class="container-fluid">
+<script type="text/javascript">
+  alert("Session expired, please login first");
+  window.location.href = "../asLogin.jsp";
+</script>
+<%
+  } 
+  %>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+	  <div class="container">
 	    <div class="navbar-header">
 	      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-2">
 	        <span class="sr-only">Toggle navigation</span>
@@ -56,7 +64,7 @@
 	    </div>
 	  </div>
 	</nav>
-<div class="container">
+<div class="container container-padding">
 <h2>Revenue</h2>
 <hr>
 <div class="col-lg-3">

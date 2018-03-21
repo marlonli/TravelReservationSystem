@@ -3,19 +3,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
   crossorigin="anonymous"></script>
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-<link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
 <link rel="stylesheet" type="text/css" href="../css/main.css">
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Customer Home Page</title>
+<title>Search For Flights</title>
 </head>
 <body>
 <%
 String username = (String) session.getAttribute("username");
-  if (username == null || "".equals(username)) {
+System.out.println("flight history, username=" + username);
+  if (username == null) {
 %>
 <script type="text/javascript">
   alert("Session expired, please login first");
@@ -24,9 +25,9 @@ String username = (String) session.getAttribute("username");
 <%
   } 
   %>
-<nav class="navbar navbar-default navbar-fixed-top">
-	  <div class="container">
-	    <div class="navbar-header">
+<nav class="navbar navbar-inverse">
+	  <div class="container-fluid">
+	    <div class="navbar-header active">
 	      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-2">
 	        <span class="sr-only">Toggle navigation</span>
 	        <span class="icon-bar"></span>
@@ -37,7 +38,8 @@ String username = (String) session.getAttribute("username");
 	    </div>
 	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
 	      <ul class="nav navbar-nav">
-	        <li><a href="myReservations.jsp">My Reservations</a></li>
+	        <li><a href="reservations.jsp">Reservations</a></li>
+	        <li><a href="searchFlight.jsp">Search Flight</a></li>
 	        <li><a href="myAccount.jsp">My Account</a></li>
 	      </ul>
 	      
@@ -47,13 +49,8 @@ String username = (String) session.getAttribute("username");
 	    </div>
 	  </div>
 </nav>
-
-<br>
-<div class="container container-padding">
-<div class="jumbotron">
-  <h3>Hello,  ${username}</h3>
-  <p>If you have not complete your profile, please go to <a href="myaccount_page.jsp">My Account</a> and modify your profile first.</p>
-</div>
+<div class="container">
+<h3>Search For a Flight</h3>
 <hr>
 <div class="col-lg-12">
   <div class="well">
@@ -138,6 +135,7 @@ String username = (String) session.getAttribute("username");
 </div>
 </div>
 </div>
+</body>
 <script type="text/javascript">
 $(document).ready(function() {
 	// get current URL path and assign 'active' class
@@ -146,5 +144,4 @@ $(document).ready(function() {
 	$('.nav:first > li > a[href="'+path+'"]').parent().addClass('active');
 })
 </script>
-</body>
 </html>
