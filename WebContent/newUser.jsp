@@ -18,21 +18,19 @@
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
   crossorigin="anonymous"></script>
+  <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="../css/main.css">
 <body>
 <div class="progress progress-striped active">
-  	  <div class="progress-bar" style="width: 45%"></div>
+  	  <div class="progress-bar" style="width: 100%"></div>
 </div>
-
-
 	<%
-	
 	//Get parameters from the HTML form at the login.jsp
 	String newName = request.getParameter("inputUsername");
 	String newEmail = request.getParameter("inputEmail");
 	String newPswd = request.getParameter("inputPassword");
 	
 	try {
-
 		//Create a connection string
 		String hostname = "cs539-spring2018.cmvm3ydsfzmo.us-west-2.rds.amazonaws.com";
 		String port = "3306";
@@ -119,7 +117,7 @@
 		}
 		
 		//Make an insert statement for the Accounts table:
-		String insert = "INSERT INTO Accounts (username, email, password, level, creat_date)"
+		String insert = "INSERT INTO Accounts (username, email, password, level, create_date)"
 				+ " VALUES (?, ?, ?, 0, ?)";
 		//Create a Prepared SQL statement allowing you to introduce the parameters of the query
 		PreparedStatement ps = con.prepareStatement(insert);
@@ -146,6 +144,7 @@
 
 		session.setAttribute("username", newName);
 		session.setAttribute("email", newEmail);
+		session.setAttribute("creation", newDate);
 		System.out.println("account created");
 		%>
 		<script> 	    		

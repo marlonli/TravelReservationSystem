@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="css/main.css">
 <title>Logging in...</title>
 </head>
@@ -55,9 +55,11 @@
 				//System.out.println(str);
 	
 				if (result.next()) {
+					session.setAttribute("username", result.getString("username"));
+					session.setAttribute("email", result.getString("email"));
+					session.setAttribute("creation", result.getString("create_date"));
 					if (result.getInt("level") == 1) {
 						// manager account
-						session.setAttribute("username", result.getString("username"));
 						session.setAttribute("usertype", "admin");
 					%>
 						<script> 
@@ -65,7 +67,6 @@
 						</script>
 					<%
 					} else if (result.getInt("level") == 0){
-						session.setAttribute("username", result.getString("username"));
 						session.setAttribute("usertype", "customer");
 					%>
 						<script> 
@@ -88,6 +89,7 @@
 
 		} catch (Exception e) {
 			out.print("failed");
+			System.out.print(e);
 			%>
 			<script> 
 		    	alert("Sorry, unexcepted error happens.");

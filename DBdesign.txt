@@ -1,3 +1,4 @@
 Accounts(username varchar(20), email varchar(30), password varchar(20), account_creat_date date, level int, PRIMARY KEY (username));
-Customers(ssn char(11), username varchar(20), lastname varchar(30), firstname varchar(30), address varchar(50), city varchar(20), state varchar(20), zipcode int, phone char(15), email varchar(30), credit_card_num char(16), Preferences char(10), PRIMARY KEY (ssn), FOREIGN KEY(username) REFERENCES Accounts(username) ON DELETE CASCADE);
+Customers(ssn char(11), username varchar(20), lastname varchar(30), firstname varchar(30), address varchar(50), city varchar(20), state varchar(20), zipcode int, phone char(15), credit_card_num char(16), Preferences char(10), PRIMARY KEY (username), FOREIGN KEY(username) REFERENCES Accounts(username) ON DELETE CASCADE);
 Managers(ssn char(11), username varchar(20), PRIMARY KEY(ssn), FOREIGN KEY (username) REFERENCES Accounts(username) ON DELETE CASCADE);
+Own(ssn char(11), username varchar(20), PRIMARY KEY (ssn, username), FOREIGN KEY (username) REFERENCES Accounts(username) ON DELETE CASCADE, FOREIGN KEY (ssn) REFERENCES Customers (ssn) ON DELETE CASCADE);

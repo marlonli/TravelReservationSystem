@@ -4,3 +4,6 @@
 .container-padding {
 	padding-top: 70px;
 }
+#table-mycustomers tbody tr{
+    cursor: pointer;
+}

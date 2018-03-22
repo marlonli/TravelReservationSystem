@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
+<link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="../css/main.css">
 <title>Checking User</title>
 </head>
@@ -15,7 +15,7 @@
 	//Get parameters from the HTML form at the login.jsp
 	String newName = request.getParameter("inputUsername");
 	String newPswd = request.getParameter("inputPassword");
-	out.print("<div class='progress progress-striped active'><div class='progress-bar' style='width: 45%'></div></div>");
+	out.print("<div class='progress progress-striped active'><div class='progress-bar' style='width: 100%'></div></div>");
 	out.print("<p>&nbsp&nbsp&nbsp&nbsploading...</p>");
 	
 	//Create a connection string

@@ -52,9 +52,206 @@ String username = (String) session.getAttribute("username");
 <div class="container container-padding">
 <div class="jumbotron">
   <h3>Hello,  ${username}</h3>
-  <p>If you have not complete your profile, please go to <a href="myaccount_page.jsp">My Account</a> and modify your profile first.</p>
+  <p>If you have not complete your profile, please go to <a href="myAccount.jsp">My Account</a> and modify your profile first.</p>
 </div>
 <hr>
+<ul class="nav nav-tabs">
+  <li class="active"><a href="#roundtrip" data-toggle="tab" aria-expanded="false">Round trip</a></li>
+  <li class=""><a href="#oneway" data-toggle="tab" aria-expanded="true">One way</a></li>
+  <li class=""><a href="#multicity" data-toggle="tab" aria-expanded="false">Multi-city</a></li>
+</ul>
+<div id="myTabContent" class="tab-content">
+  <div class="tab-pane fade active in" id="roundtrip">
+	<div class="">
+	<br>
+	  <form class="form-horizontal">
+	  <fieldset>
+	    <div class="form-group">
+	      <label for="inputOrigin" class="col-lg-2 control-label">Flying from</label>
+	      <div class="col-lg-4">
+	        <input type="text" class="form-control" id="inputOrigin" placeholder="Origin">
+	      </div>
+	      <label for="inputDestination" class="col-lg-2 control-label">Flying to</label>
+	      <div class="col-lg-4">
+	        <input type="password" class="form-control" id="inputDestination" placeholder="Destination">
+	      </div>
+	    </div>
+	    <div class="form-group">
+	      <label for="inputDeparting" class="col-lg-2 control-label">Departing</label>
+	      <div class="col-lg-4">
+	        <input type="date" class="form-control" id="inputDeparting" >
+	      </div>
+	      <label for="inputReturning" class="col-lg-2 control-label">Returning</label>
+	      <div class="col-lg-4">
+	        <input type="date" class="form-control" id="inputReturning" >
+	      </div>
+	    </div>
+	    <div class="form-group">
+	      <label for="select" class="col-lg-2 control-label">Adults (18+)</label>
+	      <div class="col-lg-4">
+	        <select class="form-control" id="adults">
+	          <option>1</option>
+	          <option>2</option>
+	          <option>3</option>
+	          <option>4</option>
+	          <option>5</option>
+	          <option>6</option>
+	        </select>
+	      </div>
+	      <label for="select" class="col-lg-2 control-label">Children (0-17)</label>
+	      <div class="col-lg-4">
+	        <select class="form-control" id="children">
+	          <option>1</option>
+	          <option>2</option>
+	          <option>3</option>
+	          <option>4</option>
+	          <option>5</option>
+	          <option>6</option>
+	        </select>
+	      </div>
+	    </div>
+	    <div class="form-group">
+	      <div class="col-lg-10 col-lg-offset-2">
+	        <button type="reset" class="btn btn-default">reset</button>
+	        <span>&nbsp&nbsp</span>
+	        <button type="submit" class="btn btn-primary">Submit</button>
+	      </div>
+	    </div>
+	  </fieldset>
+	</form>
+  </div>
+  </div>
+  
+  <div class="tab-pane fade" id="oneway">
+	<br>
+	  <form class="form-horizontal">
+	  <fieldset>
+	    <div class="form-group">
+	      <label for="inputOrigin" class="col-lg-2 control-label">Flying from</label>
+	      <div class="col-lg-4">
+	        <input type="text" class="form-control" id="inputOrigin" placeholder="Origin">
+	      </div>
+	      <label for="inputDestination" class="col-lg-2 control-label">Flying to</label>
+	      <div class="col-lg-4">
+	        <input type="password" class="form-control" id="inputDestination" placeholder="Destination">
+	      </div>
+	    </div>
+	    <div class="form-group">
+	      <label for="inputDeparting" class="col-lg-2 control-label">Departing</label>
+	      <div class="col-lg-4">
+	        <input type="date" class="form-control" id="inputDeparting" >
+	      </div>
+	    </div>
+	    <div class="form-group">
+	      <label for="select" class="col-lg-2 control-label">Adults (18+)</label>
+	      <div class="col-lg-4">
+	        <select class="form-control" id="adults">
+	          <option>1</option>
+	          <option>2</option>
+	          <option>3</option>
+	          <option>4</option>
+	          <option>5</option>
+	          <option>6</option>
+	        </select>
+	      </div>
+	      <label for="select" class="col-lg-2 control-label">Children (0-17)</label>
+	      <div class="col-lg-4">
+	        <select class="form-control" id="children">
+	          <option>1</option>
+	          <option>2</option>
+	          <option>3</option>
+	          <option>4</option>
+	          <option>5</option>
+	          <option>6</option>
+	        </select>
+	      </div>
+	    </div>
+	    <div class="form-group">
+	      <div class="col-lg-10 col-lg-offset-2">
+	        <button type="reset" class="btn btn-default">reset</button>
+	        <span>&nbsp&nbsp</span>
+	        <button type="submit" class="btn btn-primary">Submit</button>
+	      </div>
+	    </div>
+	  </fieldset>
+	</form>
+  </div>
+  <div class="tab-pane fade" id="multicity">
+    <br>
+	  <form class="form-horizontal">
+	  <fieldset>
+	    <div class="form-group">
+	      <label for="inputOrigin" class="col-lg-2 control-label">Flying from</label>
+	      <div class="col-lg-4">
+	        <input type="text" class="form-control" id="inputOrigin" placeholder="Origin">
+	      </div>
+	      <label for="inputDestination" class="col-lg-2 control-label">Flying to</label>
+	      <div class="col-lg-4">
+	        <input type="password" class="form-control" id="inputDestination" placeholder="Destination">
+	      </div>
+	    </div>
+	    <div class="form-group">
+	      <label for="inputDeparting" class="col-lg-2 control-label">Departing</label>
+	      <div class="col-lg-4">
+	        <input type="date" class="form-control" id="inputDeparting" >
+	      </div>
+	    </div>
+	    <div class="form-group">
+	      <label for="select" class="col-lg-2 control-label">Adults (18+)</label>
+	      <div class="col-lg-4">
+	        <select class="form-control" id="adults">
+	          <option>1</option>
+	          <option>2</option>
+	          <option>3</option>
+	          <option>4</option>
+	          <option>5</option>
+	          <option>6</option>
+	        </select>
+	      </div>
+	      <label for="select" class="col-lg-2 control-label">Children (0-17)</label>
+	      <div class="col-lg-4">
+	        <select class="form-control" id="children">
+	          <option>1</option>
+	          <option>2</option>
+	          <option>3</option>
+	          <option>4</option>
+	          <option>5</option>
+	          <option>6</option>
+	        </select>
+	      </div>
+	    </div>
+	    <hr>
+	    <div class="form-group">
+	      <label for="inputOrigin2" class="col-lg-2 control-label">Flying from</label>
+	      <div class="col-lg-4">
+	        <input type="text" class="form-control" id="inputOrigin2" placeholder="Origin">
+	      </div>
+	      <label for="inputDestination2" class="col-lg-2 control-label">Flying to</label>
+	      <div class="col-lg-4">
+	        <input type="password" class="form-control" id="inputDestination2" placeholder="Destination">
+	      </div>
+	    </div>
+	    <div class="form-group">
+	      <label for="inputDeparting2" class="col-lg-2 control-label">Departing</label>
+	      <div class="col-lg-4">
+	        <input type="date" class="form-control" id="inputDeparting2" >
+	      </div>
+	      
+	    </div>
+	    <div class="form-group">
+	      <div class="col-lg-10 col-lg-offset-2">
+	        <button type="reset" class="btn btn-default">reset</button>
+	        <span>&nbsp&nbsp</span>
+	        <button type="submit" class="btn btn-primary">Submit</button>
+	      </div>
+	    </div>
+	  </fieldset>
+	</form>
+  </div>
+  
+</div>
+
+<!--  
 <div class="col-lg-12">
   <div class="well">
   <form class="form-horizontal">
@@ -136,7 +333,7 @@ String username = (String) session.getAttribute("username");
   </fieldset>
 </form>
 </div>
-</div>
+</div> -->
 </div>
 <script type="text/javascript">
 $(document).ready(function() {
