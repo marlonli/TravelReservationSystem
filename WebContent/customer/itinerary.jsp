@@ -12,12 +12,13 @@
 <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="../css/main.css">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Reservation History</title>
+<title>Itinerary</title>
 </head>
 <body>
 <%
 String username = (String) session.getAttribute("username");
-System.out.println("flight history, username=" + username);
+String flight_num = request.getParameter("flight_num");
+System.out.println("itinerary, username=" + username);
   if (username == null || "".equals(username)) {
 %>
 <script type="text/javascript">
