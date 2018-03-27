@@ -101,7 +101,9 @@
 				Statement stmt = con.createStatement();
 
 				//Make a SELECT query from the table Customers
-				String str = "SELECT * FROM Customers c ;";
+
+				String str = "SELECT r.date, r.total_fare, SUM(CASE WHEN [Month] = 01 THEN r.total_fare ELSE 0 END) AS Jan,SUM(CASE WHEN [Month] = 02 THEN r.total_fare ELSE 0 END) AS Feb,SUM(CASE WHEN [Month] = 03 THEN r.total_fare ELSE 0 END) AS Mar, SUM(CASE WHEN [Month] = 04 THEN r.total_fare ELSE 0 END) AS Apr, SUM(CASE WHEN [Month] = 05 THEN r.total_fare ELSE 0 END) AS May, SUM(CASE WHEN [Month] = 06 THEN r.total_fare ELSE 0 END) AS Jun, SUM(CASE WHEN [Month] = 07 THEN r.total_fare ELSE 0 END) AS Jul, SUM(CASE WHEN [Month] = 08 THEN r.total_fare ELSE 0 END) AS Aug, SUM(CASE WHEN [Month] = 09 THEN r.total_fare ELSE 0 END) AS Sep, SUM(CASE WHEN [Month] = 10 THEN r.total_fare ELSE 0 END) AS Oct, SUM(CASE WHEN [Month] = 11 THEN r.total_fare ELSE 0 END) AS Nov, SUM(CASE WHEN [Month] = 12 THEN r.total_fare ELSE 0 END) AS Dec, SUM(r.total_fare) AS Total, FROM Reservation r";
+
 				//Run the query against the database.
 				ResultSet result = stmt.executeQuery(str);
 
@@ -113,9 +115,11 @@
 				//make a column
 				out.print("<th>#</th>");
 				//out.print("<th>Account name</th>");
-				out.print("<th>First name</th>");
-				out.print("<th>Last name</th>");
+
+				out.print("<th>customer_ssn</th>");
+				out.print("<th>booking_fee</th>");
 				out.print("</th>");
+				
 				out.print("</tr>");
 				out.print("</thead>");
 
@@ -136,11 +140,11 @@
 					//out.print("</td>");
 
 					out.print("<td>");
-					out.print(result.getString("firstname"));
+					out.print(result.getString("username"));
 					out.print("</td>");
 
 					out.print("<td>");
-					out.print(result.getString("lastname"));
+					out.print(result.getString("booking_fee"));
 					out.print("</td>");
 
 					//out.print("<td><input class='delete-button' type='button' value='delete' onclick='submitter("+ result.getString("ad_id") + ", 1)'/></td>");
