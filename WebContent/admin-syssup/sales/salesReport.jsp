@@ -19,7 +19,9 @@
 <body>
 	<%
 		String username = (String) session.getAttribute("username");
-		System.out.println("username " + username);
+		String month = request.getParameter("month");
+		System.out.print("month " + month);
+		System.out.println("salesreport " + username);
 		if (username == null || "".equals(username)) {
 	%>
 	<script type="text/javascript">
@@ -69,48 +71,109 @@
 	</div>
 	</nav>
 	<div class="container container-padding">
-		<h3>Jan 2018</h3>
+		<h3>Monthly Report &nbsp 
+		<%
+			if (month != null && !"".equals(month)) {
+				out.print("<span class='text-info'>" + month + "</span>");
+			}
+		%>
+		</h3>
+		<div class='form-group'>
+			<input type='month' id='month'>
+		</div>
 		<hr>
-		<table class="table table-striped table-hover ">
-			<thead>
-				<tr>
-					<th>#</th>
-					<th>Account Name</th>
-					<th>First Name</th>
-					<th>Last Name</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td>1</td>
-					<td>test1</td>
-					<td>Bob</td>
-					<td>Customer1</td>
-				</tr>
-				<tr>
-					<td>2</td>
-					<td>test2</td>
-					<td>Bill</td>
-					<td>Customer2</td>
-				</tr>
-				<tr>
-					<td>3</td>
-					<td>test3</td>
-					<td>Brand</td>
-					<td>Customer3</td>
-				</tr>
-			</tbody>
-		</table>
+		<%
+		if (month != null && !"".equals(month)) {
+			//Create a connection string
+			String hostname = "cs539-spring2018.cmvm3ydsfzmo.us-west-2.rds.amazonaws.com";
+			String port = "3306";
+			String dbName = "cs539proj1";
+			String userName = "marlonli";
+			String pswd = "123123123";
+			String url = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName;
+			//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
+			Class.forName("com.mysql.jdbc.Driver");
+			try {
+				//Create a connection to your DB
+				Connection con = DriverManager.getConnection(url, userName, pswd);
+
+				//Create a SQL statement
+				Statement stmt = con.createStatement();
+
+				//Make a SELECT query from the table Customers
+				String str = "SELECT * FROM Customers c ;";
+				//Run the query against the database.
+				ResultSet result = stmt.executeQuery(str);
+
+				//Make an HTML table to show the results in:
+				//out.print("<form action='editCustomerInfo.jsp' id='form-customers'>");
+				out.print("<table class='table table-hover' id='table-mycustomers'>");
+				out.print("<thead>");
+				out.print("<tr>");
+				//make a column
+				out.print("<th>#</th>");
+				//out.print("<th>Account name</th>");
+				out.print("<th>First name</th>");
+				out.print("<th>Last name</th>");
+				out.print("</th>");
+				out.print("</tr>");
+				out.print("</thead>");
+
+				//parse out the results
+				int rowNbr = 0;
+				out.print("<tbody>");
+				while (result.next()) {
+					//make a row
+					//out.print("<tr>");
+					out.print("<tr class='clickable-row' id='" + result.getString("ssn") + "'>");
+					rowNbr++;
+					out.print("<td>");
+					out.print(rowNbr);
+					out.print("</td>");
+
+					//out.print("<td>");
+					//out.print(result.getString("username"));
+					//out.print("</td>");
+
+					out.print("<td>");
+					out.print(result.getString("firstname"));
+					out.print("</td>");
+
+					out.print("<td>");
+					out.print(result.getString("lastname"));
+					out.print("</td>");
+
+					//out.print("<td><input class='delete-button' type='button' value='delete' onclick='submitter("+ result.getString("ad_id") + ", 1)'/></td>");
+					//out.print("<td><input class='report-button' type='button' value='get-report' onclick='submitter("+ result.getString("ad_id") + ", 2)'/></td>");
+
+					out.print("</tr>");
+
+				}
+				out.print("</tbody>");
+				out.print("</table>");
+				out.print("</form>");
+				//close the connection.
+				con.close();
+
+			} catch (Exception e) {
+				System.out.println(e);
+			}
+		}
+		%>
 	</div>
 </body>
 <script type="text/javascript">
-	$(document).ready(
-			function() {
-				// get current URL path and assign 'active' class
-				var pathname = window.location.pathname;
-				path = pathname.substr(pathname.lastIndexOf('/') + 1);
-				$('.nav:first > li > a[href="' + path + '"]').parent()
-						.addClass('active');
-			})
+	$(document).ready(function() {
+		// get current URL path and assign 'active' class
+		var pathname = window.location.pathname;
+		path = pathname.substr(pathname.lastIndexOf('/') + 1);
+		$('.nav:first > li > a[href="' + path + '"]').parent().addClass('active');
+	
+		// Select a month
+		$( "#month" ).change(function() {
+			  $(location).attr('href','salesReport.jsp?month=' + $('#month').val());
+			});
+	
+	})
 </script>
 </html>

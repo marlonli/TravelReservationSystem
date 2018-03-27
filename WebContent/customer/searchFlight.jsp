@@ -17,16 +17,20 @@
 <title>Search For Flights</title>
 </head>
 <body>
-	<%
+<%
 	int search = 0; // 0: round trip, 1: one way, 2: multi-city
 	String username = (String) session.getAttribute("username");
 	System.out.println("search flight, username=" + username);
 	String flightNum = "";
 	String airline = "";
 	String from = request.getParameter("inputOrigin");
+	String fromCountry = "";
 	String to = request.getParameter("inputDestination");
+	String toCountry = "";
 	String from2 = request.getParameter("inputOrigin2");
+	String from2Country = "";
 	String to2 = request.getParameter("inputDestination2");
+	String to2Country = "";
 	String dept_date = request.getParameter("inputDeparting");
 	String dept_date2 = request.getParameter("inputDeparting2");
 	String return_date = request.getParameter("inputReturning");
@@ -47,14 +51,44 @@
 	String price = "";
 	String duration = "";
 	String working_days = "";
+	String domOrInt = ""; // Domestic or international
 	if (username == null) {
-%>
+	%>
 	<script type="text/javascript">
 		alert("Session expired, please login first");
 		window.location.href = "../login.jsp";
 	</script>
 	<%
-  } 
+	} 
+	//Create a connection string
+	String hostname = "cs539-spring2018.cmvm3ydsfzmo.us-west-2.rds.amazonaws.com";
+	String port = "3306";
+	String dbName = "cs539proj1";
+	String userName = "marlonli";
+	String pswd = "123123123";
+	String url = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName;
+	//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
+	Class.forName("com.mysql.jdbc.Driver");
+	try {
+		//Create a connection to your DB
+		Connection con = DriverManager.getConnection(url, userName, pswd);
+
+		//Create a SQL statement
+		Statement stmt = con.createStatement();
+		
+		// Get the country of the airport
+		String getCountry = "SELECT a.country FROM Airport a WHERE a.id='" + from + "'";
+		System.out.println(getCountry);
+		ResultSet rs = stmt.executeQuery(getCountry);
+		if (rs.next()) {
+			fromCountry = rs.getString("country");
+		}
+		getCountry = "SELECT a.country FROM Airport a WHERE a.id='" + to + "'";
+		System.out.println(getCountry);
+		rs = stmt.executeQuery(getCountry);
+		if (rs.next()) {
+			toCountry = rs.getString("country");
+		}
   %>
 	<nav class="navbar navbar-default navbar-fixed-top">
 	<div class="container">
@@ -83,25 +117,9 @@
 	</div>
 	</nav>
 	<div class="container container-padding">
-		<h3>Search for a flight</h3>
+		<h3>Search for a flight <span class='text-info'><%=domOrInt %></span></h3>
 		<hr>
-		<%
-			//Create a connection string
-			String hostname = "cs539-spring2018.cmvm3ydsfzmo.us-west-2.rds.amazonaws.com";
-			String port = "3306";
-			String dbName = "cs539proj1";
-			String userName = "marlonli";
-			String pswd = "123123123";
-			String url = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName;
-			//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
-			Class.forName("com.mysql.jdbc.Driver");
-			try {
-				//Create a connection to your DB
-				Connection con = DriverManager.getConnection(url, userName, pswd);
-
-				//Create a SQL statement
-				Statement stmt = con.createStatement();
-
+		<% 
 				//Make a SELECT query
 				String str = "SELECT f.working_days, sec_to_time(max(time_to_sec(s.dept_time))) dept_time," + 
 					"sec_to_time(max(time_to_sec(s.arvl_time))) arvl_time, f.airline_id, l.flight_num, l.price FROM Legs l JOIN Flight f USING (flight_num) JOIN Has h USING (flight_num)JOIN Stops s ON h.stop_id=s.id WHERE l.dept_date='" 
