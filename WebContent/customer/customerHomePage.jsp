@@ -56,40 +56,39 @@ String username = (String) session.getAttribute("username");
 </div>
 <hr>
 <ul class="nav nav-tabs">
-  <li class="active"><a href="#roundtrip" data-toggle="tab" aria-expanded="false">Round trip</a></li>
-  <li class=""><a href="#oneway" data-toggle="tab" aria-expanded="true">One way</a></li>
-  <li class=""><a href="#multicity" data-toggle="tab" aria-expanded="false">Multi-city</a></li>
+  <li class="active" id="round-trip"><a href="#roundtrip" data-toggle="tab" aria-expanded="false">Round trip</a></li>
+  <li class="" id="one-way"><a href="#oneway" data-toggle="tab" aria-expanded="true">One way</a></li>
+  <li class="" id="multi-city"><a href="#multicity" data-toggle="tab" aria-expanded="false">Multi-city</a></li>
 </ul>
 <div id="myTabContent" class="tab-content">
   <div class="tab-pane fade active in" id="roundtrip">
-	<div class="">
 	<br>
-	  <form class="form-horizontal">
+	  <form class="form-horizontal" action=searchFlight.jsp>
 	  <fieldset>
 	    <div class="form-group">
 	      <label for="inputOrigin" class="col-lg-2 control-label">Flying from</label>
 	      <div class="col-lg-4">
-	        <input type="text" class="form-control" id="inputOrigin" placeholder="Origin">
+	        <input type="text" class="form-control" name="inputOrigin" placeholder="Origin">
 	      </div>
 	      <label for="inputDestination" class="col-lg-2 control-label">Flying to</label>
 	      <div class="col-lg-4">
-	        <input type="password" class="form-control" id="inputDestination" placeholder="Destination">
+	        <input type="text" class="form-control" name="inputDestination" placeholder="Destination">
 	      </div>
 	    </div>
 	    <div class="form-group">
 	      <label for="inputDeparting" class="col-lg-2 control-label">Departing</label>
 	      <div class="col-lg-4">
-	        <input type="date" class="form-control" id="inputDeparting" >
+	        <input type="date" class="form-control" name="inputDeparting" >
 	      </div>
 	      <label for="inputReturning" class="col-lg-2 control-label">Returning</label>
 	      <div class="col-lg-4">
-	        <input type="date" class="form-control" id="inputReturning" >
+	        <input type="date" class="form-control" name="inputReturning" >
 	      </div>
 	    </div>
 	    <div class="form-group">
 	      <label for="select" class="col-lg-2 control-label">Adults (18+)</label>
 	      <div class="col-lg-4">
-	        <select class="form-control" id="adults">
+	        <select class="form-control" name="adults">
 	          <option>1</option>
 	          <option>2</option>
 	          <option>3</option>
@@ -100,7 +99,8 @@ String username = (String) session.getAttribute("username");
 	      </div>
 	      <label for="select" class="col-lg-2 control-label">Children (0-17)</label>
 	      <div class="col-lg-4">
-	        <select class="form-control" id="children">
+	        <select class="form-control" name="children">
+	          <option>0</option>
 	          <option>1</option>
 	          <option>2</option>
 	          <option>3</option>
@@ -119,33 +119,32 @@ String username = (String) session.getAttribute("username");
 	    </div>
 	  </fieldset>
 	</form>
-  </div>
   </div>
   
   <div class="tab-pane fade" id="oneway">
 	<br>
-	  <form class="form-horizontal">
+	  <form class="form-horizontal" action="searchFlight.jsp">
 	  <fieldset>
 	    <div class="form-group">
 	      <label for="inputOrigin" class="col-lg-2 control-label">Flying from</label>
 	      <div class="col-lg-4">
-	        <input type="text" class="form-control" id="inputOrigin" placeholder="Origin">
+	        <input type="text" class="form-control" name="inputOrigin" placeholder="Origin">
 	      </div>
 	      <label for="inputDestination" class="col-lg-2 control-label">Flying to</label>
 	      <div class="col-lg-4">
-	        <input type="password" class="form-control" id="inputDestination" placeholder="Destination">
+	        <input type="text" class="form-control" name="inputDestination" placeholder="Destination">
 	      </div>
 	    </div>
 	    <div class="form-group">
 	      <label for="inputDeparting" class="col-lg-2 control-label">Departing</label>
 	      <div class="col-lg-4">
-	        <input type="date" class="form-control" id="inputDeparting" >
+	        <input type="date" class="form-control" name="inputDeparting" >
 	      </div>
 	    </div>
 	    <div class="form-group">
 	      <label for="select" class="col-lg-2 control-label">Adults (18+)</label>
 	      <div class="col-lg-4">
-	        <select class="form-control" id="adults">
+	        <select class="form-control" name="adults">
 	          <option>1</option>
 	          <option>2</option>
 	          <option>3</option>
@@ -156,7 +155,8 @@ String username = (String) session.getAttribute("username");
 	      </div>
 	      <label for="select" class="col-lg-2 control-label">Children (0-17)</label>
 	      <div class="col-lg-4">
-	        <select class="form-control" id="children">
+	        <select class="form-control" name="children">
+	          <option>0</option>
 	          <option>1</option>
 	          <option>2</option>
 	          <option>3</option>
@@ -176,30 +176,31 @@ String username = (String) session.getAttribute("username");
 	  </fieldset>
 	</form>
   </div>
+  
   <div class="tab-pane fade" id="multicity">
     <br>
-	  <form class="form-horizontal">
+	  <form class="form-horizontal" action='searchFlight.jsp'>
 	  <fieldset>
 	    <div class="form-group">
 	      <label for="inputOrigin" class="col-lg-2 control-label">Flying from</label>
 	      <div class="col-lg-4">
-	        <input type="text" class="form-control" id="inputOrigin" placeholder="Origin">
+	        <input type="text" class="form-control" name="inputOrigin" placeholder="Origin">
 	      </div>
 	      <label for="inputDestination" class="col-lg-2 control-label">Flying to</label>
 	      <div class="col-lg-4">
-	        <input type="password" class="form-control" id="inputDestination" placeholder="Destination">
+	        <input type="text" class="form-control" name="inputDestination" placeholder="Destination">
 	      </div>
 	    </div>
 	    <div class="form-group">
 	      <label for="inputDeparting" class="col-lg-2 control-label">Departing</label>
 	      <div class="col-lg-4">
-	        <input type="date" class="form-control" id="inputDeparting" >
+	        <input type="date" class="form-control" name="inputDeparting" >
 	      </div>
 	    </div>
 	    <div class="form-group">
 	      <label for="select" class="col-lg-2 control-label">Adults (18+)</label>
 	      <div class="col-lg-4">
-	        <select class="form-control" id="adults">
+	        <select class="form-control" name="adults">
 	          <option>1</option>
 	          <option>2</option>
 	          <option>3</option>
@@ -210,7 +211,8 @@ String username = (String) session.getAttribute("username");
 	      </div>
 	      <label for="select" class="col-lg-2 control-label">Children (0-17)</label>
 	      <div class="col-lg-4">
-	        <select class="form-control" id="children">
+	        <select class="form-control" name="children">
+	          <option>0</option>
 	          <option>1</option>
 	          <option>2</option>
 	          <option>3</option>
@@ -224,17 +226,17 @@ String username = (String) session.getAttribute("username");
 	    <div class="form-group">
 	      <label for="inputOrigin2" class="col-lg-2 control-label">Flying from</label>
 	      <div class="col-lg-4">
-	        <input type="text" class="form-control" id="inputOrigin2" placeholder="Origin">
+	        <input type="text" class="form-control" name="inputOrigin2" placeholder="Origin">
 	      </div>
 	      <label for="inputDestination2" class="col-lg-2 control-label">Flying to</label>
 	      <div class="col-lg-4">
-	        <input type="password" class="form-control" id="inputDestination2" placeholder="Destination">
+	        <input type="text" class="form-control" name="inputDestination2" placeholder="Destination">
 	      </div>
 	    </div>
 	    <div class="form-group">
 	      <label for="inputDeparting2" class="col-lg-2 control-label">Departing</label>
 	      <div class="col-lg-4">
-	        <input type="date" class="form-control" id="inputDeparting2" >
+	        <input type="date" class="form-control" name="inputDeparting2" >
 	      </div>
 	      
 	    </div>
@@ -248,92 +250,7 @@ String username = (String) session.getAttribute("username");
 	  </fieldset>
 	</form>
   </div>
-  
 </div>
-
-<!--  
-<div class="col-lg-12">
-  <div class="well">
-  <form class="form-horizontal">
-  <fieldset>
-    <div class="form-group">
-      <label class="col-lg-2 control-label">Trip</label>
-      <div class="col-lg-10">
-        <div class="radio col-lg-4">
-          <label>
-            <input type="radio" name="oneWay" id="radioOneWay" value="oneWay" checked="">
-            One way
-          </label>
-        </div>
-        <div class="radio col-lg-4">
-          <label>
-            <input type="radio" name="roundTrip" id="radioRoundTrip" value="roundTrip">
-            Round trip
-          </label>
-        </div>
-        <div class="radio col-lg-4">
-          <label>
-            <input type="radio" name="multiCity" id="radioMultiCity" value="multiCity">
-            Multi-city
-          </label>
-        </div>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="inputOrigin" class="col-lg-2 control-label">Flying from</label>
-      <div class="col-lg-4">
-        <input type="text" class="form-control" id="inputOrigin" placeholder="Origin">
-      </div>
-      <label for="inputDestination" class="col-lg-2 control-label">Flying to</label>
-      <div class="col-lg-4">
-        <input type="password" class="form-control" id="inputDestination" placeholder="Destination">
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="inputDeparting" class="col-lg-2 control-label">Departing</label>
-      <div class="col-lg-4">
-        <input type="date" class="form-control" id="inputDeparting" >
-      </div>
-      <label for="inputReturning" class="col-lg-2 control-label">Returning</label>
-      <div class="col-lg-4">
-        <input type="date" class="form-control" id="inputReturning" >
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="select" class="col-lg-2 control-label">Adults (18+)</label>
-      <div class="col-lg-4">
-        <select class="form-control" id="adults">
-          <option>1</option>
-          <option>2</option>
-          <option>3</option>
-          <option>4</option>
-          <option>5</option>
-          <option>6</option>
-        </select>
-      </div>
-      <label for="select" class="col-lg-2 control-label">Children (0-17)</label>
-      <div class="col-lg-4">
-        <select class="form-control" id="children">
-          <option>1</option>
-          <option>2</option>
-          <option>3</option>
-          <option>4</option>
-          <option>5</option>
-          <option>6</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="col-lg-10 col-lg-offset-2">
-        <button type="reset" class="btn btn-default">reset</button>
-        <span>&nbsp&nbsp</span>
-        <button type="submit" class="btn btn-primary">Submit</button>
-      </div>
-    </div>
-  </fieldset>
-</form>
-</div>
-</div> -->
 </div>
 <script type="text/javascript">
 $(document).ready(function() {

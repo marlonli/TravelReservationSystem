@@ -14,36 +14,26 @@
 	src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="../css/main.css">
-<title>Search For Flights</title>
+<title>Search for Flight</title>
 </head>
 <body>
 	<%
 	int search = 0; // 0: round trip, 1: one way, 2: multi-city
 	String username = (String) session.getAttribute("username");
-	System.out.println("search flight, username=" + username);
+	System.out.println("search return flight, username=" + username);
+	String flightNum1 = request.getParameter("flight_num");
 	String flightNum = "";
-	String airline = "";
-	String from = request.getParameter("inputOrigin");
-	String to = request.getParameter("inputDestination");
-	String from2 = request.getParameter("inputOrigin2");
-	String to2 = request.getParameter("inputDestination2");
-	String dept_date = request.getParameter("inputDeparting");
-	String dept_date2 = request.getParameter("inputDeparting2");
-	String return_date = request.getParameter("inputReturning");
-	System.out.println(from2);
-	if (from2 != null && !"".equals(from2)) {
-		search = 2;
-	} else if (return_date != null && !"".equals(return_date)) {
-		search = 0;
-	} else {
-		search = 1;
-	}
-	session.setAttribute("searchType", search);
-	System.out.println(dept_date);
+	String from = request.getParameter("from");
+	String to = request.getParameter("to");
+	String dept_date = request.getParameter("return");
+	String dept_date1 = request.getParameter("dept");
 	String adults = request.getParameter("adults");
 	String children = request.getParameter("children");
+	String dept_time1 = request.getParameter("dept_time1");
+	String arvl_time1 = request.getParameter("arvl_time1");
 	String dept_time = "";
 	String arvl_time = "";
+	String price1 = request.getParameter("price");
 	String price = "";
 	String duration = "";
 	String working_days = "";
@@ -72,7 +62,7 @@
 			id="bs-example-navbar-collapse-2">
 			<ul class="nav navbar-nav">
 				<li><a href="reservations.jsp">My Reservations</a></li>
-				<li><a href="searchFlight.jsp">Search Flight</a></li>
+				<li><a href="searchReturnFlight.jsp">Search Flight</a></li>
 				<li><a href="myAccount.jsp">My Account</a></li>
 			</ul>
 
@@ -83,7 +73,13 @@
 	</div>
 	</nav>
 	<div class="container container-padding">
-		<h3>Search for a flight</h3>
+		<h3>Search for a returning flight</h3>
+		<div class="alert alert-dismissible alert-info">
+		  <button type="button" class="close" data-dismiss="alert">&times;</button>
+		  You have selected: &nbsp <strong><%=flightNum1%>&nbsp<%=to %> &nbsp  <%=dept_time1 %>
+		  &nbsp -> &nbsp
+		  <%=from %> &nbsp <%=arvl_time1 %></strong>
+		</div>
 		<hr>
 		<%
 			//Create a connection string
@@ -102,13 +98,13 @@
 				//Create a SQL statement
 				Statement stmt = con.createStatement();
 
-				//Make a SELECT query
+				//Make a SELECT query from the table Customers
 				String str = "SELECT f.working_days, sec_to_time(max(time_to_sec(s.dept_time))) dept_time," + 
 					"sec_to_time(max(time_to_sec(s.arvl_time))) arvl_time, f.airline_id, l.flight_num, l.price FROM Legs l JOIN Flight f USING (flight_num) JOIN Has h USING (flight_num)JOIN Stops s ON h.stop_id=s.id WHERE l.dept_date='" 
 				+ dept_date + "' AND l.from_arpt='" + from + "' AND l.to_arpt='" + to + "' AND l.pid IS NULL GROUP BY (f.flight_num);";
-				System.out.println(str);
 				//Run the query against the database.
 				ResultSet result = stmt.executeQuery(str);
+				System.out.println("searching...");
 
 				//Make an HTML table to show the results in:
 				//out.print("<form action='editCustomerInfo.jsp' id='form-customers'>");
@@ -182,20 +178,17 @@
 					out.print("<Button class='btn btn-default'>SELECT</Button>");
 					out.print("</td>");
 
+					//out.print("<td><input class='delete-button' type='button' value='delete' onclick='submitter("+ result.getString("ad_id") + ", 1)'/></td>");
+					//out.print("<td><input class='report-button' type='button' value='get-report' onclick='submitter("+ result.getString("ad_id") + ", 2)'/></td>");
+
 					out.print("</tr>");
 
 				}
 				out.print("</tbody>");
 				out.print("</table>");
 				out.print("</form>");
-				if (rowNbr == 0) {
-					out.print("<div class='alert alert-dismissible alert-danger'>");
-					out.print("<button type='button' class='close' data-dismiss='alert'>&times;</button>");
-					out.print("Sorry, no flight available yet.</div>");
-				}
 				//close the connection.
 				con.close();
-
 			} catch (Exception e) {
 				System.out.println(e);
 			}
@@ -210,27 +203,16 @@
 		$('.nav:first > li > a[href="' + path + '"]').parent().addClass('active');
 		// "select" button click function
 		$('#table-flights tbody td button').click(function() {
-			var flight_num = $(this).parent().parent().attr('id');
-			var dept_time = $(this).parent().parent().find('#dept-time').html();
-			var arvl_time = $(this).parent().parent().find('#arvl-time').html();
-			var price = $(this).parent().parent().find('#price').html();
-			<% 
-			System.out.println("searchType" + session.getAttribute("searchType"));
-			if ((Integer) session.getAttribute("searchType") == 0) {%>
-				// round trip
-				$(location).attr('href','searchReturnFlight.jsp?flight_num='+ flight_num + "&return="
-				+ "<%=return_date%>&dept=<%=dept_date%>&from=<%=to%>&to=<%=from%>&adults=<%=adults%>&children=<%=children%>" 
-				+ "&dept_time1=" + dept_time + "&arvl_time1=" + arvl_time + "&price=" + price);
-			<%} else if ((Integer) session.getAttribute("searchType") == 1) {%>
-				// one way
-				$(location).attr("href","reviewFlight.jsp?flight_num1="+ flight_num + "&dept_date1=<%=dept_date%>&from=<%=from%>&to=<%=to%>&adults=<%=adults%>&children=<%=children%>" 
-						+ "&dept_time1=" + dept_time + "&arvl_time1=" + arvl_time + "&price1=" + price);
-			<%} else {%>
-				$(location).attr('href','searchMulticity.jsp?flight_num='+ flight_num + "&dept2="
-				+ "<%=dept_date2%>&dept=<%=dept_date%>&from=<%=from%>&to=<%=to%>&from2=<%=from2%>&to2=<%=to2%>&adults=<%=adults%>&children=<%=children%>" 
-				+ "&dept_time1=" + dept_time + "&arvl_time1=" + arvl_time + "&price=" + price);
-			<%}
-			%>
+			//$.post( "editCustomerInfo.jsp", { ssn: $(this).attr('id')});
+			var flight_num2 = $(this).parent().parent().attr('id');
+			var dept_time2 = $(this).parent().parent().find('#dept-time').html();
+			var arvl_time2 = $(this).parent().parent().find('#arvl-time').html();
+			var price2 = $(this).parent().parent().find('#price').html();
+			console.log("clicked");
+			$(location).attr('href', "reviewFlight.jsp?flight_num1=<%=flightNum1%>&flight_num2=" + flight_num2
+					+ "&dept_date1=<%=dept_date1%>&dept_date2=<%=dept_date%>&dept_time1=<%=dept_time1%>&dept_time2=" + dept_time2 
+					+ "&arvl_time1=<%=arvl_time1%>&arvl_time2=" + arvl_time2 + "&from=<%=to%>&to=<%=from%>&adults=<%=adults%>&children=<%=children%>"
+					+ "&price1=<%=price1%>&price2=" + price2);
 		});
 	})
 </script>
