@@ -14,7 +14,7 @@
 <link rel="stylesheet" type="text/css"
 	href="../../css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="../../css/main.css">
-<title>Sales Report</title>
+<title>Revenue</title>
 </head>
 <body>
 	<%
@@ -69,8 +69,16 @@
 	</div>
 	</nav>
 	<div class="container container-padding">
-		<h3>Sales Report</h3>
+		<h3>Revenue</h3>
 		<hr>
+		<div class="col-lg-3">
+			<div class="list-group">
+				<a href="revenue.jsp" class="list-group-item">By flight</a> 
+				<a href="byDestination.jsp" class="list-group-item">By destination city</a> 
+				<a href="byCustomer.jsp" class="list-group-item active">By customer</a>
+			</div>
+		</div>
+        <div class='col-lg-9'>
 		<%
 			//Create a connection string
 			String hostname = "cs539-spring2018.cmvm3ydsfzmo.us-west-2.rds.amazonaws.com";
@@ -81,42 +89,54 @@
 			String url = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName;
 			//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
 			Class.forName("com.mysql.jdbc.Driver");
+			
+			//Run the query against the database.
+
+		
+			
 			try {
 				//Create a connection to your DB
 				Connection con = DriverManager.getConnection(url, userName, pswd);
-
+				
 				//Create a SQL statement
 				Statement stmt = con.createStatement();
-
-				//Make a SELECT query from the table Customers
-				String str = "SELECT r.date, r.total_fare, SUM(CASE WHEN [Month] = 01 THEN r.total_fare ELSE 0 END) AS Jan,SUM(CASE WHEN [Month] = 02 THEN r.total_fare ELSE 0 END) AS Feb,SUM(CASE WHEN [Month] = 03 THEN r.total_fare ELSE 0 END) AS Mar, SUM(CASE WHEN [Month] = 04 THEN r.total_fare ELSE 0 END) AS Apr, SUM(CASE WHEN [Month] = 05 THEN r.total_fare ELSE 0 END) AS May, SUM(CASE WHEN [Month] = 06 THEN r.total_fare ELSE 0 END) AS Jun, SUM(CASE WHEN [Month] = 07 THEN r.total_fare ELSE 0 END) AS Jul, SUM(CASE WHEN [Month] = 08 THEN r.total_fare ELSE 0 END) AS Aug, SUM(CASE WHEN [Month] = 09 THEN r.total_fare ELSE 0 END) AS Sep, SUM(CASE WHEN [Month] = 10 THEN r.total_fare ELSE 0 END) AS Oct, SUM(CASE WHEN [Month] = 11 THEN r.total_fare ELSE 0 END) AS Nov, SUM(CASE WHEN [Month] = 12 THEN r.total_fare ELSE 0 END) AS Dec, SUM(r.total_fare) AS Total, FROM Reservation r";
+				
+				//Make a SELECT query from the table Reservation
+				String str = "SELECT r.username Customer, SUM(r.total_fare) Revenue  FROM Reservations r, Accounts a where r.username=a.username group by r.username";
 				//Run the query against the database.
+				
 				ResultSet result = stmt.executeQuery(str);
-
+				// #####################################
 				//Make an HTML table to show the results in:
 				//out.print("<form action='editCustomerInfo.jsp' id='form-customers'>");
-				out.print("<table class='table table-hover' id='table-mycustomers'>");
+				
+				//String test = "SELECT * FROM Reservations r ";
+				//ResultSet rs = stmt.executeQuery(test);
+				//######################
+				   //ResultSetMetaData rsmd = str.getMetaData();
+				   //System.out.println("querying "+ str);
+				   //int columnsNumber = rsmd.getColumnCount();
+				
+				out.print("<table class='table table-hover' id='table-Revenue'>");
 				out.print("<thead>");
 				out.print("<tr>");
 				//make a column
-				out.print("<th>#</th>");
-				//out.print("<th>Account name</th>");
-				out.print("<th>customer_ssn</th>");
-				out.print("<th>booking_fee</th>");
-				out.print("</th>");
+				out.print("<th>Customer</th>");
+				out.print("<th>Revenue(US Dollar)</th>");
+				
 				out.print("</tr>");
 				out.print("</thead>");
-
-				//parse out the results
+				
 				int rowNbr = 0;
+				//parse out the results
 				out.print("<tbody>");
+			
 				while (result.next()) {
 					//make a row
 					//out.print("<tr>");
-					out.print("<tr class='clickable-row' id='" + result.getString("ssn") + "'>");
-					rowNbr++;
 					out.print("<td>");
-					out.print(rowNbr);
+					rowNbr++;
+					out.print(result.getString("Customer"));
 					out.print("</td>");
 
 					//out.print("<td>");
@@ -124,39 +144,30 @@
 					//out.print("</td>");
 
 					out.print("<td>");
-					out.print(result.getString("username"));
+					out.print(result.getString("Revenue"));
 					out.print("</td>");
 
-					out.print("<td>");
-					out.print(result.getString("booking_fee"));
-					out.print("</td>");
-
-					//out.print("<td><input class='delete-button' type='button' value='delete' onclick='submitter("+ result.getString("ad_id") + ", 1)'/></td>");
-					//out.print("<td><input class='report-button' type='button' value='get-report' onclick='submitter("+ result.getString("ad_id") + ", 2)'/></td>");
-
+				
+					
+					//make a row
 					out.print("</tr>");
+					
+					//String columnValue = rs.getString(rowNbr);
+					//out.print(columnValue + " ");
+			
+		
 
 				}
 				out.print("</tbody>");
 				out.print("</table>");
-				out.print("</form>");
+				//out.print("</form>");
 				//close the connection.
 				con.close();
 
 			} catch (Exception e) {
 			}
 		%>
-
-	</div>
+</div>
+</div>
 </body>
-<script type="text/javascript">
-	$(document).ready(
-			function() {
-				// get current URL path and assign 'active' class
-				var pathname = window.location.pathname;
-				path = pathname.substr(pathname.lastIndexOf('/') + 1);
-				$('.nav:first > li > a[href="' + path + '"]').parent()
-						.addClass('active');
-			})
-</script>
 </html>

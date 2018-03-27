@@ -69,44 +69,110 @@
 	</div>
 	</nav>
 	<div class="container container-padding">
-		<h2>Revenue</h2>
+		<h3>Revenue</h3>
 		<hr>
 		<div class="col-lg-3">
 			<div class="list-group">
-				<a href="#" class="list-group-item active">By flight</a> <a href="#"
-					class="list-group-item">By destination city</a> <a href="#"
-					class="list-group-item">By customer</a>
+				<a href="revenue.jsp" class="list-group-item active">By flight</a> 
+				<a href="byDestination.jsp" class="list-group-item">By destination city</a> 
+				<a href="byCustomer.jsp" class="list-group-item">By customer</a>
 			</div>
 		</div>
+        <div class='col-lg-9'>
+		<%
+			//Create a connection string
+			String hostname = "cs539-spring2018.cmvm3ydsfzmo.us-west-2.rds.amazonaws.com";
+			String port = "3306";
+			String dbName = "cs539proj1";
+			String userName = "marlonli";
+			String pswd = "123123123";
+			String url = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName;
+			//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
+			Class.forName("com.mysql.jdbc.Driver");
+			
+			//Run the query against the database.
 
-		<div class="col-lg-9">
-			<table class="table table-striped table-hover ">
-				<thead>
-					<tr>
-						<th>#</th>
-						<th>Flight</th>
-						<th>Revenue(US Dollar)</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>1</td>
-						<td>AA</td>
-						<td>13500</td>
-					</tr>
-					<tr>
-						<td>2</td>
-						<td>UA</td>
-						<td>25600</td>
-					</tr>
-					<tr>
-						<td>3</td>
-						<td>SW</td>
-						<td>3700</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	</div>
+		
+			
+			try {
+				//Create a connection to your DB
+				Connection con = DriverManager.getConnection(url, userName, pswd);
+				
+				//Create a SQL statement
+				Statement stmt = con.createStatement();
+				
+				//Make a SELECT query from the table Reservation
+				String str = "SELECT a.id airline, f.flight_num, SUM(r.total_fare) Revenue From Airlines a, Flight f JOIN Legs l USING (flight_num) JOIN Reservations r ON r.id = l.rid WHERE f.airline_id = a.id GROUP BY f.flight_num;";
+				//Run the query against the database.
+				
+				ResultSet result = stmt.executeQuery(str);
+				// #####################################
+				//Make an HTML table to show the results in:
+				//out.print("<form action='editCustomerInfo.jsp' id='form-customers'>");
+				
+				//String test = "SELECT * FROM Reservations r ";
+				//ResultSet rs = stmt.executeQuery(test);
+				//######################
+				   //ResultSetMetaData rsmd = str.getMetaData();
+				   //System.out.println("querying "+ str);
+				   //int columnsNumber = rsmd.getColumnCount();
+				
+				out.print("<table class='table table-hover' id='table-Revenue'>");
+				out.print("<thead>");
+				out.print("<tr>");
+				//make a column
+				out.print("<th>Airline</th>");
+				out.print("<th>Flight Number</th>");
+				out.print("<th>Revenue(US Dollar)</th>");
+				
+				out.print("</tr>");
+				out.print("</thead>");
+				
+				int rowNbr = 0;
+				//parse out the results
+				out.print("<tbody>");
+			
+				while (result.next()) {
+					//make a row
+					//out.print("<tr>");
+					out.print("<td>");
+					rowNbr++;
+					out.print(result.getString("airline"));
+					out.print("</td>");
+
+					//out.print("<td>");
+					//out.print(result.getString("username"));
+					//out.print("</td>");
+
+					out.print("<td>");
+					out.print(result.getString("flight_num"));
+					out.print("</td>");
+
+					out.print("<td>");
+					out.print(result.getString("Revenue"));
+					out.print("</td>");
+
+				
+					
+					//make a row
+					out.print("</tr>");
+					
+					//String columnValue = rs.getString(rowNbr);
+					//out.print(columnValue + " ");
+			
+		
+
+				}
+				out.print("</tbody>");
+				out.print("</table>");
+				//out.print("</form>");
+				//close the connection.
+				con.close();
+
+			} catch (Exception e) {
+			}
+		%>
+</div>
+</div>
 </body>
 </html>
