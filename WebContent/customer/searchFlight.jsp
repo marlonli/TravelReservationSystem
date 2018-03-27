@@ -77,17 +77,22 @@
 		Statement stmt = con.createStatement();
 		
 		// Get the country of the airport
-		String getCountry = "SELECT a.country FROM Airport a WHERE a.id='" + from + "'";
+		String getCountry = "SELECT a.country FROM Airports a WHERE a.id='" + from + "'";
 		System.out.println(getCountry);
 		ResultSet rs = stmt.executeQuery(getCountry);
 		if (rs.next()) {
 			fromCountry = rs.getString("country");
 		}
-		getCountry = "SELECT a.country FROM Airport a WHERE a.id='" + to + "'";
+		getCountry = "SELECT a.country FROM Airports a WHERE a.id='" + to + "'";
 		System.out.println(getCountry);
 		rs = stmt.executeQuery(getCountry);
 		if (rs.next()) {
 			toCountry = rs.getString("country");
+		}
+		if (!"United States".equals(fromCountry) || !"United States".equals(toCountry)) {
+			domOrInt = "(International)";
+		} else {
+			domOrInt = "(Domestic)";
 		}
   %>
 	<nav class="navbar navbar-default navbar-fixed-top">
