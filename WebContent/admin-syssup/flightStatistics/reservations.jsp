@@ -14,7 +14,7 @@
 <link rel="stylesheet" type="text/css"
 	href="../../css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="../../css/main.css">
-<title>Revenue</title>
+<title>Reservations</title>
 </head>
 <body>
 	<%
@@ -70,6 +70,17 @@
 	</nav>
 	<div class="container container-padding">
 		<h2>Reservations</h2>
+		<form class="form-horizontal">
+		<fieldset>
+		<div class="form-group">
+	      <label for="inputFlight" class="col-lg-2 control-label">Flight number</label>
+	      <div class="col-lg-2">
+	        <input type="text" class="form-control" id="inputFlight" placeholder="Flight number">
+	      </div>
+	      <a href="#" class="btn btn-default" id='search'>Search</a>
+	    </div>
+	    </fieldset>
+	    </form>
 		<hr>
 		<div class="col-lg-3">
 			<div class="list-group">
@@ -170,4 +181,17 @@
 </div>
 </div>
 </body>
+<script type="text/javascript">
+$(document).ready(function() {
+	// get current URL path and assign 'active' class
+	var pathname = window.location.pathname;
+	path = pathname.substr(pathname.lastIndexOf('/') + 1);
+	$('.nav:first > li > a[href="' + path + '"]').parent().addClass('active');
+	
+	//Select a month
+	$( "#search" ).click(function() {
+		  $(location).attr('href','reservations.jsp?flight_num=' + $('#inputFlight').val());
+		});
+})
+</script>
 </html>			
