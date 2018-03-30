@@ -19,6 +19,7 @@
 <body>
 	<%
 		String username = (String) session.getAttribute("username");
+	    String flight_num = request.getParameter("flight_num");
 		System.out.println("username " + username);
 		if (username == null || "".equals(username)) {
 	%>
@@ -113,7 +114,9 @@
 				Statement stmt = con.createStatement();
 				
 				//Make a SELECT query from the table Reservation
-				String flightnumber = "SELECT f.airline_id Airline, f.flight_num FROM Flight f";
+				
+				String flightnumber = "SELECT l.flight_num, l.dept_date, r.date, r.username, c.firstname, c.lastname, r.total_fare FROM Legs l, Reservations r, Customers c, Own o where r.id = l.rid and r.username= o.username  and o.ssn= c.ssn and l.flight_num ="+ flight_num;
+				
 				//Run the query against the database.				
 				ResultSet result = stmt.executeQuery(flightnumber);
 				// #####################################
@@ -132,9 +135,13 @@
 				out.print("<thead>");
 				out.print("<tr>");
 				//make a column
-				out.print("<th>#</th>");
-				out.print("<th>Reservation ID</th>");
-				out.print("<th>Reservation ID</th>");
+				out.print("<th>Flight Number</th>");
+				out.print("<th>Reservation Date</th>");
+				out.print("<th>Departure Date</th>");
+				out.print("<th>Reservation Username</th>");
+				out.print("<th>First Name</th>");
+				out.print("<th>Last Name</th>");
+				out.print("<th>Total Fare</th>");
 				out.print("</tr>");
 				out.print("</thead>");
 				
@@ -147,7 +154,7 @@
 					//out.print("<tr>");
 					out.print("<td>");
 					rowNbr++;
-					out.print(result.getString("Airline"));
+					out.print(result.getString("flight_num"));
 					out.print("</td>");
 
 					//out.print("<td>");
@@ -155,7 +162,27 @@
 					//out.print("</td>");
 
 					out.print("<td>");
-					out.print(result.getString("f.flight_num"));
+					out.print(result.getString("r.date"));
+					out.print("</td>");
+					
+					out.print("<td>");
+					out.print(result.getString("l.dept_date"));
+					out.print("</td>");
+					
+					out.print("<td>");
+					out.print(result.getString("r.username"));
+					out.print("</td>");
+					
+					out.print("<td>");
+					out.print(result.getString("c.firstname"));
+					out.print("</td>");
+					
+					out.print("<td>");
+					out.print(result.getString("c.lastname"));
+					out.print("</td>");
+					
+					out.print("<td>");
+					out.print(result.getString("r.total_fare"));
 					out.print("</td>");
 
 				
@@ -176,6 +203,7 @@
 				con.close();
 
 			} catch (Exception e) {
+				System.out.println(e);
 			}
 		%>
 </div>
@@ -194,4 +222,4 @@ $(document).ready(function() {
 		});
 })
 </script>
-</html>			
+</html>		

@@ -14,12 +14,14 @@
 <link rel="stylesheet" type="text/css"
 	href="../../css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="../../css/main.css">
-<title>Revenue</title>
+<title>Reservations</title>
 </head>
 <body>
 	<%
 		String username = (String) session.getAttribute("username");
+	    String customername = request.getParameter("customername");
 		System.out.println("username " + username);
+		System.out.println("customername = " + customername);
 		if (username == null || "".equals(username)) {
 	%>
 	<script type="text/javascript">
@@ -70,6 +72,17 @@
 	</nav>
 	<div class="container container-padding">
 		<h2>Reservations</h2>
+		<form class="form-horizontal">
+		<fieldset>
+		<div class="form-group">
+	      <label for="inputname" class="col-lg-2 control-label">Customer UserName</label>
+	      <div class="col-lg-2">
+	        <input type="text" class="form-control" id="inputname" placeholder="Customer UserName">
+	      </div>
+	      <a href="#" class="btn btn-default" id='search'>Search</a>
+	    </div>
+	    </fieldset>
+	    </form>
 		<hr>
 		<div class="col-lg-3">
 			<div class="list-group">
@@ -80,30 +93,134 @@
 		</div>
 
 		<div class="col-lg-9">
-			<h3>UA 589</h3>
-			<table class="table table-striped table-hover ">
-				<thead>
-					<tr>
-						<th>#</th>
-						<th>Reservation ID</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>1</td>
-						<td>001357</td>
-					</tr>
-					<tr>
-						<td>2</td>
-						<td>020689</td>
-					</tr>
-					<tr>
-						<td>3</td>
-						<td>003700</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	</div>
+		<%
+			//Create a connection string
+			String hostname = "cs539-spring2018.cmvm3ydsfzmo.us-west-2.rds.amazonaws.com";
+			String port = "3306";
+			String dbName = "cs539proj1";
+			String userName = "marlonli";
+			String pswd = "123123123";
+			String url = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName;
+			//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
+			Class.forName("com.mysql.jdbc.Driver");
+			
+					
+					
+					
+			try {
+				//Create a connection to your DB
+				Connection con = DriverManager.getConnection(url, userName, pswd);
+				
+				//Create a SQL statement
+				Statement stmt = con.createStatement();
+				
+				//Make a SELECT query from the table Reservation
+				
+				String flightnumber = "SELECT r.username, c.firstname, c.lastname, l.flight_num, l.dept_date, r.date, r.total_fare  FROM Legs l, Reservations r, Customers c, Own o where r.id = l.rid and r.username= o.username and o.ssn= c.ssn and r.username = '"+ customername + "'";
+				
+				//Run the query against the database.				
+				ResultSet result = stmt.executeQuery(flightnumber);
+				// #####################################
+				//Make an HTML table to show the results in:
+				//out.print("<form action='editCustomerInfo.jsp' id='form-customers'>");
+				
+				//String test = "SELECT * FROM Reservations r ";
+				//ResultSet rs = stmt.executeQuery(test);
+				//######################
+				   //ResultSetMetaData rsmd = str.getMetaData();
+				   //System.out.println("querying "+ str);
+				   //int columnsNumber = rsmd.getColumnCount();
+				
+				   ///out.print("<h3>result.getString("Airline")</h3>");
+				out.print("<table class='table table-hover' id='table-reservations'>");
+				out.print("<thead>");
+				out.print("<tr>");
+				//make a column
+				out.print("<th>Reservation Username</th>");
+				out.print("<th>First Name</th>");
+				out.print("<th>Last Name</th>");
+				out.print("<th>Flight Number</th>");
+				out.print("<th>Reservation Date</th>");
+				out.print("<th>Departure Date</th>");
+				out.print("<th>Total Fare</th>");
+				out.print("</tr>");
+				out.print("</thead>");
+				
+				int rowNbr = 0;
+				//parse out the results
+				out.print("<tbody>");
+			
+				while (result.next()) {
+					//make a row
+					//out.print("<tr>");
+					out.print("<td>");
+					rowNbr++;
+					out.print(result.getString("customername"));
+					out.print("</td>");
+
+					
+					out.print("<td>");
+					out.print(result.getString("c.firstname"));
+					out.print("</td>");
+					
+					out.print("<td>");
+					out.print(result.getString("c.lastname"));
+					out.print("</td>");
+					//out.print("<td>");
+					//out.print(result.getString("username"));
+					//out.print("</td>");
+
+					out.print("<td>");
+					out.print(result.getString("l.flight_num"));
+					out.print("</td>");
+					
+					out.print("<td>");
+					out.print(result.getString("r.date"));
+					out.print("</td>");
+					
+					out.print("<td>");
+					out.print(result.getString("l.dept_date"));
+					out.print("</td>");
+					
+					out.print("<td>");
+					out.print(result.getString("r.total_fare"));
+					out.print("</td>");
+
+				
+					
+					//make a row
+					out.print("</tr>");
+					
+					//String columnValue = rs.getString(rowNbr);
+					//out.print(columnValue + " ");
+			
+		
+
+				}
+				out.print("</tbody>");
+				out.print("</table>");
+				//out.print("</form>");
+				//close the connection.
+				con.close();
+
+			} catch (Exception e) {
+				System.out.println(e);
+			}
+		%>
+</div>
+</div>
 </body>
-</html>
+<script type="text/javascript">
+$(document).ready(function() {
+	// get current URL path and assign 'active' class
+	var pathname = window.location.pathname;
+	path = pathname.substr(pathname.lastIndexOf('/') + 1);
+	$('.nav:first > li > a[href="' + path + '"]').parent().addClass('active');
+	
+	//Select a month
+	$( "#search" ).click(function() {
+		  $(location).attr('href','customername.jsp?customername=' + $('#inputname').val());
+		});
+})
+</script>
+</html>	
