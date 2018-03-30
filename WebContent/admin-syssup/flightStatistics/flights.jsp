@@ -14,7 +14,7 @@
 <link rel="stylesheet" type="text/css"
 	href="../../css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="../../css/main.css">
-<title>Flight Statistics</title>
+<title>Revenue</title>
 </head>
 <body>
 	<%
@@ -49,16 +49,16 @@
 					data-toggle="dropdown" role="button" aria-expanded="false">Sales<span
 						class="caret"></span></a>
 					<ul class="dropdown-menu" role="menu">
-						<li><a href="../sales/salesReport.jsp">Sales Report</a></li>
-						<li><a href="../sales/revenue.jsp">Revenue</a></li>
+						<li><a href="salesReport.jsp">Sales Report</a></li>
+						<li><a href="revenue.jsp">Revenue</a></li>
 					</ul></li>
 				<li class="dropdown"><a href="#" class="dropdown-toggle"
 					data-toggle="dropdown" role="button" aria-expanded="true">Statistics
 						<span class="caret"></span>
 				</a>
 					<ul class="dropdown-menu" role="menu">
-						<li><a href="reservations.jsp">Reservations</a></li>
-						<li><a href="flights.jsp">Flights</a></li>
+						<li><a href="../flightStatistics/reservations.jsp">Reservations</a></li>
+						<li><a href="../flightStatistics/flights.jsp">Flights</a></li>
 					</ul></li>
 			</ul>
 
@@ -73,41 +73,122 @@
 		<hr>
 		<div class="col-lg-3">
 			<div class="list-group">
-				<a href="#" class="list-group-item active">All flights</a> <a
-					href="#" class="list-group-item">Active flights</a> <a href="#"
-					class="list-group-item">Find flights by airport</a> <a href="#"
-					class="list-group-item">Flight status</a>
+				<a href="flights.jsp" class="list-group-item active">All flights</a> 
+				<a href="activeflights.jsp" class="list-group-item">Active flights</a> 
+				<a href="byairport.jsp"class="list-group-item">Find flights by airport</a> 
+				<a href="flightstatus.jsp"class="list-group-item">Flight status</a>
 			</div>
 		</div>
+        <div class='col-lg-9'>
+		<%
+			//Create a connection string
+			String hostname = "cs539-spring2018.cmvm3ydsfzmo.us-west-2.rds.amazonaws.com";
+			String port = "3306";
+			String dbName = "cs539proj1";
+			String userName = "marlonli";
+			String pswd = "123123123";
+			String url = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName;
+			//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
+			Class.forName("com.mysql.jdbc.Driver");
+			
+			//Run the query against the database.
 
-		<div class="col-lg-9">
-			<table class="table table-striped table-hover ">
-				<thead>
-					<tr>
-						<th>#</th>
-						<th>Flight</th>
-						<th>Revenue(US Dollar)</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>1</td>
-						<td>AA</td>
-						<td>13500</td>
-					</tr>
-					<tr>
-						<td>2</td>
-						<td>UA</td>
-						<td>25600</td>
-					</tr>
-					<tr>
-						<td>3</td>
-						<td>SW</td>
-						<td>3700</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	</div>
+		
+			
+			try {
+				//Create a connection to your DB
+				Connection con = DriverManager.getConnection(url, userName, pswd);
+				
+				//Create a SQL statement
+				Statement stmt = con.createStatement();
+				
+				//Make a SELECT query from the table Reservation
+				String str = "select f.airline_id Airline, f.flight_num FlightNumber, l.from_arpt Departure, l.to_arpt Arrival, f.working_days Workingdays, f.seats Seat, f.fares Fare From Flight f, Legs l where f.flight_num = l.flight_num order by f.airline_id";
+				//Run the query against the database.
+				
+				ResultSet result = stmt.executeQuery(str);
+				// #####################################
+				//Make an HTML table to show the results in:
+				//out.print("<form action='editCustomerInfo.jsp' id='form-customers'>");
+				
+				//String test = "SELECT * FROM Reservations r ";
+				//ResultSet rs = stmt.executeQuery(test);
+				//######################
+				   //ResultSetMetaData rsmd = str.getMetaData();
+				   //System.out.println("querying "+ str);
+				   //int columnsNumber = rsmd.getColumnCount();
+				
+				out.print("<table class='table table-hover' id='table-Revenue'>");
+				out.print("<thead>");
+				out.print("<tr>");
+				//make a column
+				out.print("<th>Airline</th>");
+				out.print("<th>FlightNumber</th>");
+				out.print("<th>Departure</th>");
+				out.print("<th>Arrival</th>");
+				out.print("<th>Working days</th>");
+				out.print("<th>Seat</th>");
+				out.print("<th>Fare</th>");
+				
+				out.print("</tr>");
+				out.print("</thead>");
+				
+				int rowNbr = 0;
+				//parse out the results
+				out.print("<tbody>");
+			
+				while (result.next()) {
+					//make a row
+					//out.print("<tr>");
+					out.print("<td>");
+					rowNbr++;
+					out.print(result.getString("Airline"));
+					out.print("</td>");
+
+
+					out.print("<td>");
+					out.print(result.getString("FlightNumber"));
+					out.print("</td>");
+
+
+					out.print("<td>");
+					out.print(result.getString("Departure"));
+					out.print("</td>");				
+					
+					out.print("<td>");
+					out.print(result.getString("Arrival"));
+					out.print("</td>");			
+					
+					out.print("<td>");
+					out.print(result.getString("Workingdays"));
+					out.print("</td>");	
+					
+					out.print("<td>");
+					out.print(result.getString("Seat"));
+					out.print("</td>");	
+					
+					out.print("<td>");
+					out.print(result.getString("Fare"));
+					out.print("</td>");	
+					//make a row
+					out.print("</tr>");
+					
+					//String columnValue = rs.getString(rowNbr);
+					//out.print(columnValue + " ");
+			
+		
+
+				}
+				out.print("</tbody>");
+				out.print("</table>");
+				//out.print("</form>");
+				//close the connection.
+				con.close();
+
+			} catch (Exception e) {
+			}
+		%>
+</div>
+</div>
 </body>
 </html>

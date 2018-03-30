@@ -24,7 +24,9 @@
 	String flightNum1 = request.getParameter("flight_num");
 	String flightNum = "";
 	String from = request.getParameter("from2");
+	String fromCountry = "";
 	String to = request.getParameter("to2");
+	String toCountry = "";
 	String from1 = request.getParameter("from");
 	String to1 = request.getParameter("to");
 	String dept_date = request.getParameter("dept2");
@@ -39,6 +41,7 @@
 	String price = "";
 	String duration = "";
 	String working_days = "";
+	String domOrInt = "";
 	if (username == null) {
 %>
 	<script type="text/javascript">
@@ -47,7 +50,40 @@
 	</script>
 	<%
   } 
-  %>
+  
+  //Create a connection string
+	String hostname = "cs539-spring2018.cmvm3ydsfzmo.us-west-2.rds.amazonaws.com";
+	String port = "3306";
+	String dbName = "cs539proj1";
+	String userName = "marlonli";
+	String pswd = "123123123";
+	String url = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName;
+	//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
+	Class.forName("com.mysql.jdbc.Driver");
+	try {
+		//Create a connection to your DB
+		Connection con = DriverManager.getConnection(url, userName, pswd);
+		//Create a SQL statement
+		Statement stmt = con.createStatement();
+		// Get the country of the airport
+		String getCountry = "SELECT a.country FROM Airports a WHERE a.id='" + from + "'";
+		System.out.println(getCountry);
+		ResultSet rs = stmt.executeQuery(getCountry);
+		if (rs.next()) {
+			fromCountry = rs.getString("country");
+		}
+		getCountry = "SELECT a.country FROM Airports a WHERE a.id='" + to + "'";
+		System.out.println(getCountry);
+		rs = stmt.executeQuery(getCountry);
+		if (rs.next()) {
+			toCountry = rs.getString("country");
+		}
+		if (!"United States".equals(fromCountry) || !"United States".equals(toCountry)) {
+			domOrInt = "(International)";
+		} else {
+			domOrInt = "(Domestic)";
+		}
+		%>
 	<nav class="navbar navbar-default navbar-fixed-top">
 	<div class="container">
 		<div class="navbar-header active">
@@ -75,7 +111,7 @@
 	</div>
 	</nav>
 	<div class="container container-padding">
-		<h3>Search for the second flight</h3>
+		<h3>Search for the second flight <span class='text-info'><%=domOrInt %></h3>
 		<div class="alert alert-dismissible alert-info">
 		  <button type="button" class="close" data-dismiss="alert">&times;</button>
 		  You have selected: &nbsp <strong><%=flightNum1%>&nbsp<%=from1 %> &nbsp  <%=dept_time1 %>
@@ -84,122 +120,106 @@
 		</div>
 		<hr>
 		<%
-			//Create a connection string
-			String hostname = "cs539-spring2018.cmvm3ydsfzmo.us-west-2.rds.amazonaws.com";
-			String port = "3306";
-			String dbName = "cs539proj1";
-			String userName = "marlonli";
-			String pswd = "123123123";
-			String url = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName;
-			//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
-			Class.forName("com.mysql.jdbc.Driver");
-			try {
-				//Create a connection to your DB
-				Connection con = DriverManager.getConnection(url, userName, pswd);
+		//Make a SELECT query from the table Customers
+		String str = "SELECT f.working_days, sec_to_time(max(time_to_sec(s.dept_time))) dept_time," + 
+			"sec_to_time(max(time_to_sec(s.arvl_time))) arvl_time, f.airline_id, l.flight_num, l.price FROM Legs l JOIN Flight f USING (flight_num) JOIN Has h USING (flight_num)JOIN Stops s ON h.stop_id=s.id WHERE l.dept_date='" 
+		+ dept_date + "' AND l.from_arpt='" + from + "' AND l.to_arpt='" + to + "' AND l.pid IS NULL GROUP BY (f.flight_num);";
+		//Run the query against the database.
+		ResultSet result = stmt.executeQuery(str);
+		System.out.println(str);
 
-				//Create a SQL statement
-				Statement stmt = con.createStatement();
+		//Make an HTML table to show the results in:
+		//out.print("<form action='editCustomerInfo.jsp' id='form-customers'>");
+		out.print("<table class='table table-hover' id='table-flights'>");
+		out.print("<thead>");
+		out.print("<tr>");
+		//make a column
+		out.print("<th>Flight</th>");
+		out.print("<th>From</th>");
+		out.print("<th>Departure</th>");
+		out.print("<th>To</th>");
+		out.print("<th>Arrival</th>");
+		out.print("<th>Duration</th>");
+		out.print("<th>Price</th>");
+		out.print("<th></th>");
+		out.print("</th>");
+		out.print("</tr>");
+		out.print("</thead>");
 
-				//Make a SELECT query from the table Customers
-				String str = "SELECT f.working_days, sec_to_time(max(time_to_sec(s.dept_time))) dept_time," + 
-					"sec_to_time(max(time_to_sec(s.arvl_time))) arvl_time, f.airline_id, l.flight_num, l.price FROM Legs l JOIN Flight f USING (flight_num) JOIN Has h USING (flight_num)JOIN Stops s ON h.stop_id=s.id WHERE l.dept_date='" 
-				+ dept_date + "' AND l.from_arpt='" + from + "' AND l.to_arpt='" + to + "' AND l.pid IS NULL GROUP BY (f.flight_num);";
-				//Run the query against the database.
-				ResultSet result = stmt.executeQuery(str);
-				System.out.println(str);
+		//parse out the results
+		int rowNbr = 0;
+		out.print("<tbody>");
+		while (result.next()) {
+			//make a row
+			//out.print("<tr>");
+			out.print("<tr class='clickable-row' id='" + result.getString("airline_id") + " " + result.getString("flight_num") + "'>");
+			rowNbr++;
+			out.print("<td>");
+			out.print(result.getString("airline_id") + " " + result.getString("flight_num"));
+			out.print("</td>");
 
-				//Make an HTML table to show the results in:
-				//out.print("<form action='editCustomerInfo.jsp' id='form-customers'>");
-				out.print("<table class='table table-hover' id='table-flights'>");
-				out.print("<thead>");
-				out.print("<tr>");
-				//make a column
-				out.print("<th>Flight</th>");
-				out.print("<th>From</th>");
-				out.print("<th>Departure</th>");
-				out.print("<th>To</th>");
-				out.print("<th>Arrival</th>");
-				out.print("<th>Duration</th>");
-				out.print("<th>Price</th>");
-				out.print("<th></th>");
-				out.print("</th>");
-				out.print("</tr>");
-				out.print("</thead>");
-
-				//parse out the results
-				int rowNbr = 0;
-				out.print("<tbody>");
-				while (result.next()) {
-					//make a row
-					//out.print("<tr>");
-					out.print("<tr class='clickable-row' id='" + result.getString("airline_id") + " " + result.getString("flight_num") + "'>");
-					rowNbr++;
-					out.print("<td>");
-					out.print(result.getString("airline_id") + " " + result.getString("flight_num"));
-					out.print("</td>");
-
-					out.print("<td>");
-					out.print(from);
-					out.print("</td>");
+			out.print("<td>");
+			out.print(from);
+			out.print("</td>");
 					
-					dept_time = result.getString("dept_time");
-					String[] dept = dept_time.split(":");
-					out.print("<td id='dept-time'>");
-					out.print(dept[0] + ":" + dept[1]);
-					out.print("</td>");
+			dept_time = result.getString("dept_time");
+			String[] dept = dept_time.split(":");
+			out.print("<td id='dept-time'>");
+			out.print(dept[0] + ":" + dept[1]);
+			out.print("</td>");
 
-					out.print("<td>");
-					out.print(to);
-					out.print("</td>");
+			out.print("<td>");
+			out.print(to);
+			out.print("</td>");
 					
-					arvl_time = result.getString("arvl_time");
-					String[] arvl = arvl_time.split(":");
-					out.print("<td id='arvl-time'>");
-					out.print(arvl[0] + ":" + arvl[1]);
-					out.print("</td>");
+			arvl_time = result.getString("arvl_time");
+			String[] arvl = arvl_time.split(":");
+			out.print("<td id='arvl-time'>");
+			out.print(arvl[0] + ":" + arvl[1]);
+			out.print("</td>");
 
-					SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
-					java.util.Date date1 = format.parse(dept_time);
-					java.util.Date date2 = format.parse(arvl_time);
-					long difference = date2.getTime() - date1.getTime();
-					long hour = (difference / (60 * 60 * 1000));
-				    long min = ((difference / (60 * 1000)) - hour * 60);
-					out.print("<td>");
-					if (hour != 0) {
-						out.print(hour + "h " + min + "m");
-					} else {
-						out.print(min + "m");
-					}
-					out.print("</td>");
-					
-					out.print("<td id='price'>");
-					out.print("$" + result.getString("price"));
-					out.print("</td>");
-					
-					out.print("<td>");
-					out.print("<Button class='btn btn-default'>SELECT</Button>");
-					out.print("</td>");
-
-					//out.print("<td><input class='delete-button' type='button' value='delete' onclick='submitter("+ result.getString("ad_id") + ", 1)'/></td>");
-					//out.print("<td><input class='report-button' type='button' value='get-report' onclick='submitter("+ result.getString("ad_id") + ", 2)'/></td>");
-
-					out.print("</tr>");
-
-				}
-				out.print("</tbody>");
-				out.print("</table>");
-				out.print("</form>");
-				if (rowNbr == 0) {
-					out.print("<div class='alert alert-dismissible alert-danger'>");
-					out.print("<button type='button' class='close' data-dismiss='alert'>&times;</button>");
-					out.print("Sorry, no flight available yet.</div>");
-				}
-				//close the connection.
-				con.close();
-			} catch (Exception e) {
-				System.out.println(e);
+			SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+			java.util.Date date1 = format.parse(dept_time);
+			java.util.Date date2 = format.parse(arvl_time);
+			long difference = date2.getTime() - date1.getTime();
+			long hour = (difference / (60 * 60 * 1000));
+			long min = ((difference / (60 * 1000)) - hour * 60);
+			out.print("<td>");
+			if (hour != 0) {
+				out.print(hour + "h " + min + "m");
+			} else {
+				out.print(min + "m");
 			}
-		%>
+			out.print("</td>");
+					
+			out.print("<td id='price'>");
+			out.print("$" + result.getString("price"));
+			out.print("</td>");
+					
+			out.print("<td>");
+			out.print("<Button class='btn btn-default'>SELECT</Button>");
+			out.print("</td>");
+
+			//out.print("<td><input class='delete-button' type='button' value='delete' onclick='submitter("+ result.getString("ad_id") + ", 1)'/></td>");
+			//out.print("<td><input class='report-button' type='button' value='get-report' onclick='submitter("+ result.getString("ad_id") + ", 2)'/></td>");
+
+			out.print("</tr>");
+
+		}
+		out.print("</tbody>");
+		out.print("</table>");
+		out.print("</form>");
+		if (rowNbr == 0) {
+			out.print("<div class='alert alert-dismissible alert-danger'>");
+			out.print("<button type='button' class='close' data-dismiss='alert'>&times;</button>");
+			out.print("Sorry, no flight available yet.</div>");
+		}
+		//close the connection.
+		con.close();
+	} catch (Exception e) {
+		System.out.println(e);
+	}
+%>
 	</div>
 </body>
 <script type="text/javascript">

@@ -24,7 +24,9 @@
 	String flightNum1 = request.getParameter("flight_num");
 	String flightNum = "";
 	String from = request.getParameter("from");
+	String fromCountry = "";
 	String to = request.getParameter("to");
+	String toCountry = "";
 	String dept_date = request.getParameter("return");
 	String dept_date1 = request.getParameter("dept");
 	String adults = request.getParameter("adults");
@@ -37,6 +39,7 @@
 	String price = "";
 	String duration = "";
 	String working_days = "";
+	String domOrInt = ""; // Domestic or international
 	if (username == null) {
 %>
 	<script type="text/javascript">
@@ -45,7 +48,40 @@
 	</script>
 	<%
   } 
-  %>
+  //Create a connection string
+	String hostname = "cs539-spring2018.cmvm3ydsfzmo.us-west-2.rds.amazonaws.com";
+	String port = "3306";
+	String dbName = "cs539proj1";
+	String userName = "marlonli";
+	String pswd = "123123123";
+	String url = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName;
+	//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
+	Class.forName("com.mysql.jdbc.Driver");
+	try {
+		//Create a connection to your DB
+		Connection con = DriverManager.getConnection(url, userName, pswd);
+
+		//Create a SQL statement
+		Statement stmt = con.createStatement();
+		// Get the country of the airport
+		String getCountry = "SELECT a.country FROM Airports a WHERE a.id='" + from + "'";
+		System.out.println(getCountry);
+		ResultSet rs = stmt.executeQuery(getCountry);
+		if (rs.next()) {
+			fromCountry = rs.getString("country");
+		}
+		getCountry = "SELECT a.country FROM Airports a WHERE a.id='" + to + "'";
+		System.out.println(getCountry);
+		rs = stmt.executeQuery(getCountry);
+		if (rs.next()) {
+			toCountry = rs.getString("country");
+		}
+		if (!"United States".equals(fromCountry) || !"United States".equals(toCountry)) {
+			domOrInt = "(International)";
+		} else {
+			domOrInt = "(Domestic)";
+		}
+		%>
 	<nav class="navbar navbar-default navbar-fixed-top">
 	<div class="container">
 		<div class="navbar-header active">
@@ -73,7 +109,9 @@
 	</div>
 	</nav>
 	<div class="container container-padding">
-		<h3>Search for a returning flight</h3>
+		<h3>Search for a returning flight
+			<span class='text-info'><%=domOrInt %></span>
+		</h3>
 		<div class="alert alert-dismissible alert-info">
 		  <button type="button" class="close" data-dismiss="alert">&times;</button>
 		  You have selected: &nbsp <strong><%=flightNum1%>&nbsp<%=to %> &nbsp  <%=dept_time1 %>
@@ -81,22 +119,7 @@
 		  <%=from %> &nbsp <%=arvl_time1 %></strong>
 		</div>
 		<hr>
-		<%
-			//Create a connection string
-			String hostname = "cs539-spring2018.cmvm3ydsfzmo.us-west-2.rds.amazonaws.com";
-			String port = "3306";
-			String dbName = "cs539proj1";
-			String userName = "marlonli";
-			String pswd = "123123123";
-			String url = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName;
-			//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
-			Class.forName("com.mysql.jdbc.Driver");
-			try {
-				//Create a connection to your DB
-				Connection con = DriverManager.getConnection(url, userName, pswd);
-
-				//Create a SQL statement
-				Statement stmt = con.createStatement();
+		<% 
 
 				//Make a SELECT query from the table Customers
 				String str = "SELECT f.working_days, sec_to_time(max(time_to_sec(s.dept_time))) dept_time," + 
