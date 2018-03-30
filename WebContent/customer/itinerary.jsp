@@ -99,7 +99,7 @@ try {
 	out.print("<tbody>");
 	while (result.next()) {
 		//make a row
-		out.print("<tr class='clickable-row' id='" + result.getString("flight_num") + "'>");
+		out.print("<tr>");
 		rowNbr++;
 		out.print("<td>");
 		out.print(rowNbr);
