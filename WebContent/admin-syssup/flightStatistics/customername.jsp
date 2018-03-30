@@ -69,7 +69,7 @@
 	</div>
 	</nav>
 	<div class="container container-padding">
-		<h2>Flight Statistics</h2>
+		<h2>Reservations</h2>
 		<hr>
 		<div class="col-lg-3">
 			<div class="list-group">
