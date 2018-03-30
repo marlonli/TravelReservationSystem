@@ -1,3 +1,4 @@
+
 <%@ page import="java.io.*,java.util.*,java.sql.*"%>
 <%@ page import="javax.servlet.http.*,javax.servlet.*"%>
 
@@ -17,14 +18,21 @@
 <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="../css/main.css">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Reservations</title>
+<title>Reservation History</title>
 </head>
 <body>
+      <center>
+         <h1>Display Current Date & Time</h1>
+      </center>
+      <%
+         Date dNow = new Date( );
+         SimpleDateFormat ft = 
+         new SimpleDateFormat ("YYYY-MM-dd");
+         out.print( "<h2 align=\"center\">" + ft.format(dNow) + "</h2>");
+      %>
 <%
 String username = (String) session.getAttribute("username");
 System.out.println("flight history, username=" + username);
-Date dNow = new Date( );
-SimpleDateFormat ft = new SimpleDateFormat ("YYYY/MM/dd");
   if (username == null || "".equals(username)) {
 %>
 <script type="text/javascript">
@@ -62,11 +70,9 @@ SimpleDateFormat ft = new SimpleDateFormat ("YYYY/MM/dd");
 <hr>
 <div class="col-lg-3">
    <div class="list-group">
- 	  <a href="myReservations.jsp" class="list-group-item active">Current reservations</a>
- 	  <a href="reservationHistory.jsp" class="list-group-item">Reservation history</a>
+ 	  <a href="#" class="list-group-item active">Current reservations</a>
+ 	  <a href="#" class="list-group-item">Reservation history</a>
    </div>
-</div>
-<div class='col-lg-9'>
 <%
 //Create a connection string
 String hostname = "cs539-spring2018.cmvm3ydsfzmo.us-west-2.rds.amazonaws.com";
@@ -76,6 +82,8 @@ String userName = "marlonli";
 String pswd = "123123123";
 String url = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName;
 
+
+
 //Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
 Class.forName("com.mysql.jdbc.Driver");
 try {
@@ -84,51 +92,122 @@ try {
 
 	//Create a SQL statement
 	Statement stmt = con.createStatement();
-	
-	String str2 = "SELECT T1.airline_id ,T1.flight_num FROM (   SELECT     a.username,    r.id rid,    r.date,    r.booking_fee,	    r.total_fare,    l.dept_date,	    MAX(s.dept_time) dept_time,	    l.arvl_date,    Max(s.arvl_time) arvl_time,    f.airline_id,   l.flight_num,    l.seat_num,	    l.seat_class,l.from_arpt, ap.city from_city,  l.to_arpt, ap2.city to_city,  p.firstname,   p.lastname FROM Accounts a   JOIN Reservations r USING (username) JOIN Legs l ON (r.id = l.rid)  JOIN  Passengers p ON (l.pid = p.id)   JOIN   Flight f ON f.flight_num = l.flight_num   JOIN Airports ap ON l.from_arpt = ap.id JOIN Airports ap2 ON l.to_arpt=ap2.id JOIN Stops s ON f.flight_num=s.flight_num  group by r.date) T1 GROUP BY T1.flight_num ORDER BY COUNT(T1.flight_num) DESC, T1.flight_num LIMIT 1 ;";
-	String prefix = "THE BEST SELLER =";
+
+	//Make a SELECT query from the table Customers
+	String str = "SELECT     a.username,    r.id rid,    r.date,    r.booking_fee,	    r.total_fare,    l.dept_date,	    MAX(s.dept_time) dept_time,	    l.arvl_date,    Max(s.arvl_time) arvl_time,    f.airline_id,   l.flight_num,    l.seat_num,	    l.seat_class,l.from_arpt, ap.city from_city,  l.to_arpt, ap2.city to_city,  p.firstname,   p.lastname FROM Accounts a   JOIN Reservations r USING (username) JOIN Legs l ON (r.id = l.rid)  JOIN  Passengers p ON (l.pid = p.id)   JOIN   Flight f ON f.flight_num = l.flight_num   JOIN Airports ap ON l.from_arpt = ap.id JOIN Airports ap2 ON l.to_arpt=ap2.id JOIN Stops s ON f.flight_num=s.flight_num   WHERE a.username='" + username + "'group by r.date ;";
+
 	//Run the query against the database.
-	ResultSet result2 = stmt.executeQuery(str2);
+	ResultSet result = stmt.executeQuery(str);
+
 	
-	out.print("<h2>Best Seller</h2>");
+	
+	
+	//Make an HTML table to show the results in:
+	//out.print("<form action='editCustomerInfo.jsp' id='form-myReservations'>");
+	out.print("<table class='table table-hover' id='table-myReservations'>");
 	out.print("<thead>");
 	out.print("<tr>");
 	//make a column
 	out.print("<th>#</th>");
-	out.print("<th> </th>");
-	
+	out.print("<th>Flight Number11 </th>");
+	out.print("<th>Departure City</th>");
+	out.print("<th>Destination City</th>");
+	out.print("<th>Departure Date</th>");
+	out.print("<th>Arrival Date</th>");
 	out.print("</th>");
 	out.print("</tr>");
 	out.print("</thead>");
 	
 	//parse out the results
-	int rowNbr1 = 0;
-	
+	int rowNbr = 0;
 	out.print("<tbody>");
+	while (result.next()) {
+		//make a row
+		out.print("<tr class='clickable-row' id='" + result.getString("flight_num") + "'>");
+		rowNbr++;
+		out.print("<td>");
+		out.print(rowNbr);
+		out.print("</td>");
 	
-	while (result2.next()) {
-		
-	
-	out.print("<tr>");
-	
-	rowNbr1++;
-	
-	out.print("<td>");
-	out.print(rowNbr1);
-	out.print("</td>");
-	
-	
-	out.print("<td>");
-	out.print(prefix);
-	out.print(result2.getString("T1.airline_id"));
-	out.print(result2.getString("T1.flight_num"));
-	//out.print(ft.format(dNow));
+		out.print("<td>");
+	out.print(result.getString("airline_id"));
+	out.print(result.getString("flight_num"));
 	out.print("</td>");		
 	
 	
+	out.print("<td>");
+	out.print(result.getString("from_city"));
+	out.print("</td>");		
+	
+	
+	out.print("<td>");
+	out.print(result.getString("to_city"));
+	out.print("</td>");		
+	
+	out.print("<td>");
+	out.print(result.getString("dept_date"));
+	out.print("</td>");		
+	
+	out.print("<td>");
+	out.print(result.getString("arvl_date"));
+	out.print("</td>");		
+	
 	out.print("</tr>");	
-	out.print("</tbody>");
 	}
+	
+	out.print("</tbody>");
+	out.print("</table>");
+	out.print("</form>");
+	//close the connection.
+	
+	
+	
+
+	
+	String str2 = "SELECT T1.airline_id ,T1.flight_num FROM (   SELECT     a.username,    r.id rid,    r.date,    r.booking_fee,	    r.total_fare,    l.dept_date,	    MAX(s.dept_time) dept_time,	    l.arvl_date,    Max(s.arvl_time) arvl_time,    f.airline_id,   l.flight_num,    l.seat_num,	    l.seat_class,l.from_arpt, ap.city from_city,  l.to_arpt, ap2.city to_city,  p.firstname,   p.lastname FROM Accounts a   JOIN Reservations r USING (username) JOIN Legs l ON (r.id = l.rid)  JOIN  Passengers p ON (l.pid = p.id)   JOIN   Flight f ON f.flight_num = l.flight_num   JOIN Airports ap ON l.from_arpt = ap.id JOIN Airports ap2 ON l.to_arpt=ap2.id JOIN Stops s ON f.flight_num=s.flight_num  group by r.date) T1 GROUP BY T1.flight_num ORDER BY COUNT(T1.flight_num) DESC, T1.flight_num LIMIT 1 ;";
+	String prefix = "THE BEST SELLER =";
+//Run the query against the database.
+ResultSet result2 = stmt.executeQuery(str2);
+
+out.print("<h2>Best Seller</h2>");
+out.print("<thead>");
+out.print("<tr>");
+//make a column
+out.print("<th>#</th>");
+out.print("<th> </th>");
+
+out.print("</th>");
+out.print("</tr>");
+out.print("</thead>");
+
+//parse out the results
+int rowNbr1 = 0;
+
+out.print("<tbody>");
+
+while (result2.next()) {
+	
+
+out.print("<tr>");
+
+rowNbr1++;
+
+out.print("<td>");
+out.print(rowNbr1);
+out.print("</td>");
+
+
+out.print("<td>");
+out.print(prefix);
+out.print(result2.getString("T1.airline_id"));
+out.print(result2.getString("T1.flight_num"));
+//out.print(ft.format(dNow));
+out.print("</td>");		
+
+
+out.print("</tr>");	
+out.print("</tbody>");
+}
 
 
 
@@ -155,13 +234,13 @@ out.print("</tr>");
 out.print("</thead>");
 
 //parse out the results
-	int rowNbr3 = 0;
+	int rowNbr3 = 1;
 	out.print("<tbody>");
 	while (result3.next()) {
 		//make a row
 		
 		out.print("<tr>");
-		rowNbr3++;
+		rowNbr++;
 		out.print("<td>");
 		out.print(rowNbr3);
 		out.print("</td>");

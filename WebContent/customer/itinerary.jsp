@@ -17,7 +17,8 @@
 <body>
 <%
 String username = (String) session.getAttribute("username");
-String flight_num1 = request.getParameter("flight_num");
+String flight_num = request.getParameter("flight_num");
+System.out.println(flight_num);
 System.out.println("itinerary, username=" + username);
   if (username == null || "".equals(username)) {
 %>
@@ -73,8 +74,7 @@ try {
 	Statement stmt = con.createStatement();
 
 	//Make a SELECT query from the table Customers
-	String str = "SELECT     a.username,    r.id rid,    r.date,    r.booking_fee,	    r.total_fare,    l.dept_date,	    MAX(s.dept_time) dept_time,	    l.arvl_date,    Max(s.arvl_time) arvl_time,    f.airline_id,   l.flight_num,    l.seat_num,	    l.seat_class,l.from_arpt, ap.city from_city,  l.to_arpt, ap2.city to_city,  p.firstname,   p.lastname FROM Accounts a   JOIN Reservations r USING (username) JOIN Legs l ON (r.id = l.rid)  JOIN  Passengers p ON (l.pid = p.id)   JOIN   Flight f ON f.flight_num = l.flight_num   JOIN Airports ap ON l.from_arpt = ap.id JOIN Airports ap2 ON l.to_arpt=ap2.id JOIN Stops s ON f.flight_num=s.flight_num   WHERE a.username='" + username + "'group by flight_num ;";
-
+	String str = "SELECT 	T1.dept_date,  T1.dept_time,  T1.airline_id,  T1.from_city,  T1.from_arpt,    T1.seat_num,   T1.seat_class,   T1.arvl_date,    T1.arvl_time,  T1.to_city,T1.to_arpt from (	SELECT     a.username,   r.id rid,    r.date,    r.booking_fee,    r.total_fare,   l.dept_date,  MAX(s.dept_time) dept_time,  l.arvl_date,  Max(s.arvl_time) arvl_time,  f.airline_id,    l.flight_num,  l.seat_num,   l.seat_class,    l.from_arpt,   ap.city from_city,  l.to_arpt, ap2.city to_city,   p.firstname,  p.lastname	FROM  Accounts a     JOIN  Reservations r USING (username)    JOIN  Legs l ON (r.id = l.rid)    JOIN  Passengers p ON (l.pid = p.id)   JOIN Flight f ON f.flight_num = l.flight_num   JOIN Airports ap ON l.from_arpt = ap.id	JOIN Airports ap2 ON l.to_arpt=ap2.id JOIN Stops s ON f.flight_num=s.flight_num WHERE a.username='" + username + "'  	group by flight_num )T1 WHERE T1.flight_num='"+ flight_num +"'";
 	//Run the query against the database.
 	ResultSet result = stmt.executeQuery(str);
 
@@ -94,6 +94,9 @@ try {
 	out.print("</tr>");
 	out.print("</thead>");
 	
+	
+	
+	
 	//parse out the results
 	int rowNbr = 0;
 	out.print("<tbody>");
@@ -107,7 +110,7 @@ try {
 	
 		out.print("<td>");
 	//out.print(result.getString("airline_id"));
-	out.print(flight_num1);
+	out.print(flight_num);
 	out.print("</td>");		
 	
 	
@@ -136,10 +139,10 @@ try {
 	out.print("</form>");
 	//close the connection.
 	con.close();
-
-} catch (Exception e) {
-}
 	
+} catch (Exception e) {
+	  System.out.println(e);
+	}
 %>
 
 </div>
