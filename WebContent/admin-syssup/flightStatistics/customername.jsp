@@ -19,9 +19,9 @@
 <body>
 	<%
 		String username = (String) session.getAttribute("username");
-	    String customername = request.getParameter("customername");
+	    String firstname = request.getParameter("firstname");
 		System.out.println("username " + username);
-		System.out.println("customername = " + customername);
+		System.out.println("firstname = " + firstname);
 		if (username == null || "".equals(username)) {
 	%>
 	<script type="text/javascript">
@@ -75,9 +75,9 @@
 		<form class="form-horizontal">
 		<fieldset>
 		<div class="form-group">
-	      <label for="inputname" class="col-lg-2 control-label">Customer UserName</label>
+	      <label for="inputname" class="col-lg-2 control-label">Customer FirstName</label>
 	      <div class="col-lg-2">
-	        <input type="text" class="form-control" id="inputname" placeholder="Customer UserName">
+	        <input type="text" class="form-control" id="inputname" placeholder="Customer FirstName">
 	      </div>
 	      <a href="#" class="btn btn-default" id='search'>Search</a>
 	    </div>
@@ -116,7 +116,7 @@
 				
 				//Make a SELECT query from the table Reservation
 				
-				String flightnumber = "SELECT r.username, c.firstname, c.lastname, l.flight_num, l.dept_date, r.date, r.total_fare  FROM Legs l, Reservations r, Customers c, Own o where r.id = l.rid and r.username= o.username and o.ssn= c.ssn and r.username = '"+ customername + "'";
+				String flightnumber = "SELECT r.username, c.firstname, c.lastname, l.flight_num, l.dept_date, r.date, r.total_fare  FROM Legs l, Reservations r, Customers c, Own o where r.id = l.rid and r.username= o.username and o.ssn= c.ssn and c.firstname = '"+ firstname +"'";
 				
 				//Run the query against the database.				
 				ResultSet result = stmt.executeQuery(flightnumber);
@@ -155,7 +155,7 @@
 					//out.print("<tr>");
 					out.print("<td>");
 					rowNbr++;
-					out.print(result.getString("customername"));
+					out.print(result.getString("r.username"));
 					out.print("</td>");
 
 					
@@ -219,7 +219,7 @@ $(document).ready(function() {
 	
 	//Select a month
 	$( "#search" ).click(function() {
-		  $(location).attr('href','customername.jsp?customername=' + $('#inputname').val());
+		  $(location).attr('href','customername.jsp?firstname=' + $('#inputname').val());
 		});
 })
 </script>
