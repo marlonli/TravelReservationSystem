@@ -17,7 +17,7 @@
 <body>
 <%
 String username = (String) session.getAttribute("username");
-String flight_num = request.getParameter("flight_num");
+String flight_num1 = request.getParameter("flight_num");
 System.out.println("itinerary, username=" + username);
   if (username == null || "".equals(username)) {
 %>
@@ -54,6 +54,7 @@ System.out.println("itinerary, username=" + username);
 <div class="container container-padding">
 <h3>My Reservations</h3>
 <hr>
+
 <%
 //Create a connection string
 String hostname = "cs539-spring2018.cmvm3ydsfzmo.us-west-2.rds.amazonaws.com";
@@ -105,8 +106,8 @@ try {
 		out.print("</td>");
 	
 		out.print("<td>");
-	out.print(result.getString("rid"));
-	out.print(result.getString("flight_num"));
+	//out.print(result.getString("airline_id"));
+	out.print(flight_num1);
 	out.print("</td>");		
 	
 	
