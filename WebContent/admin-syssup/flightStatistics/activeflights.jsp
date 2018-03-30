@@ -103,7 +103,7 @@
 				Statement stmt = con.createStatement();
 				
 				//Make a SELECT query from the table Reservation
-				String str = "SELECT l.to_arpt Destination, SUM(r.total_fare) Revenue From Legs l JOIN Reservations r ON r.id = l.rid GROUP BY l.to_arpt";
+				String str = "SELECT F.airline_id, L.flight_num,  Count(*) num_flight From Legs L, Flight F WHERE F.flight_num=L.flight_num Group by  L.flight_num ORDER BY COUNT(F.flight_num) DESC, F.flight_num";
 				//Run the query against the database.
 				
 				ResultSet result = stmt.executeQuery(str);
@@ -122,8 +122,9 @@
 				out.print("<thead>");
 				out.print("<tr>");
 				//make a column
-				out.print("<th>Destination</th>");
-				out.print("<th>Revenue(US Dollar)</th>");
+				out.print("<th>Airline</th>");
+				out.print("<th>Flight Number</th>");
+				out.print("<th>Number of Flights</th>");
 				
 				out.print("</tr>");
 				out.print("</thead>");
@@ -137,7 +138,7 @@
 					//out.print("<tr>");
 					out.print("<td>");
 					rowNbr++;
-					out.print(result.getString("Destination"));
+					out.print(result.getString("F.airline_id"));
 					out.print("</td>");
 
 					//out.print("<td>");
@@ -145,9 +146,12 @@
 					//out.print("</td>");
 
 					out.print("<td>");
-					out.print(result.getString("Revenue"));
+					out.print(result.getString("L.flight_num"));
 					out.print("</td>");
 
+					out.print("<td>");
+					out.print(result.getString("num_flight"));
+					out.print("</td>");
 				
 					
 					//make a row
