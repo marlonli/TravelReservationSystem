@@ -102,9 +102,6 @@
 			//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
 			Class.forName("com.mysql.jdbc.Driver");
 			
-					
-					
-					
 			try {
 				//Create a connection to your DB
 				Connection con = DriverManager.getConnection(url, userName, pswd);
@@ -165,9 +162,6 @@
 					
 					//String columnValue = rs.getString(rowNbr);
 					//out.print(columnValue + " ");
-			
-		
-
 				}
 				out.print("</tbody>");
 				out.print("</table>");
@@ -176,6 +170,7 @@
 				con.close();
 
 			} catch (Exception e) {
+				System.out.println(e);
 			}
 		%>
 </div>

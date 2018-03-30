@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ page import="java.io.*,java.util.*,java.sql.*"%>
+<%@ page import="javax.servlet.http.*,javax.servlet.*"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -55,6 +57,65 @@ String username = (String) session.getAttribute("username");
   <p>If you have not complete your profile, please go to <a href="myAccount.jsp">My Account</a> and modify your profile first.</p>
 </div>
 <hr>
+<%
+//Create a connection string
+String hostname = "cs539-spring2018.cmvm3ydsfzmo.us-west-2.rds.amazonaws.com";
+String port = "3306";
+String dbName = "cs539proj1";
+String userName = "marlonli";
+String pswd = "123123123";
+String url = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName;
+
+//Load JDBC driver - the interface standardizing the connection procedure. Look at WEB-INF\lib for a mysql connector jar file, otherwise it fails.
+Class.forName("com.mysql.jdbc.Driver");
+try {
+	//Create a connection to your DB
+	Connection con = DriverManager.getConnection(url, userName, pswd);
+
+	//Create a SQL statement
+	Statement stmt = con.createStatement();
+	
+	String str2 = "SELECT T1.airline_id ,T1.flight_num FROM (   SELECT     a.username,    r.id rid,    r.date,    r.booking_fee,	    r.total_fare,    l.dept_date,	    MAX(s.dept_time) dept_time,	    l.arvl_date,    Max(s.arvl_time) arvl_time,    f.airline_id,   l.flight_num,    l.seat_num,	    l.seat_class,l.from_arpt, ap.city from_city,  l.to_arpt, ap2.city to_city,  p.firstname,   p.lastname FROM Accounts a   JOIN Reservations r USING (username) JOIN Legs l ON (r.id = l.rid)  JOIN  Passengers p ON (l.pid = p.id)   JOIN   Flight f ON f.flight_num = l.flight_num   JOIN Airports ap ON l.from_arpt = ap.id JOIN Airports ap2 ON l.to_arpt=ap2.id JOIN Stops s ON f.flight_num=s.flight_num  group by r.date) T1 GROUP BY T1.flight_num ORDER BY COUNT(T1.flight_num) DESC, T1.flight_num LIMIT 1 ;";
+	String prefix = "THE BEST SELLER IS ";
+	//Run the query against the database.
+	ResultSet result2 = stmt.executeQuery(str2);
+	
+	out.print("<h3>Best Seller</h3>");
+	out.print("<thead>");
+	out.print("<tr>");
+	
+	out.print("</th>");
+	out.print("</tr>");
+	out.print("</thead>");
+	
+	//parse out the results
+	int rowNbr1 = 0;
+	
+	out.print("<tbody>");
+	
+	while (result2.next()) {
+		
+	
+	out.print("<tr>");
+	
+	out.print("<td>");
+	out.print(prefix);
+	out.print("<span class='text-success'>");
+	out.print(result2.getString("T1.airline_id"));
+	out.print(result2.getString("T1.flight_num"));
+	out.print("</span>");
+	out.print("</td>");		
+	
+	
+	out.print("</tr>");	
+	out.print("</tbody>");
+	}
+} catch (Exception e) {
+	System.out.println(e);
+}
+%>
+<hr>
+<h3>Search a flight</h3>
 <ul class="nav nav-tabs">
   <li class="active" id="round-trip"><a href="#roundtrip" data-toggle="tab" aria-expanded="false">Round trip</a></li>
   <li class="" id="one-way"><a href="#oneway" data-toggle="tab" aria-expanded="true">One way</a></li>

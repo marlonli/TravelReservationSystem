@@ -58,12 +58,12 @@ SimpleDateFormat ft = new SimpleDateFormat ("YYYY/MM/dd");
 	  </div>
 </nav>
 <div class="container container-padding">
-<h3>My Reservations</h3>
+<h3>All Reservations</h3>
 <hr>
 <div class="col-lg-3">
    <div class="list-group">
  	  <a href="myReservations.jsp" class="list-group-item">Current reservations</a>
- 	  <a href="reservationHistory.jsp" class="list-group-item active">Reservation history</a>
+ 	  <a href="reservationHistory.jsp" class="list-group-item active">All reservations</a>
    </div>
 </div>
 <div class='col-lg-9'>
@@ -86,7 +86,7 @@ try {
 	Statement stmt = con.createStatement();
 
 	//Make a SELECT query from the table Customers
-	String str = "SELECT     a.username,    r.id rid,    r.date,    r.booking_fee,	    r.total_fare,    l.dept_date,	    MAX(s.dept_time) dept_time,	    l.arvl_date,    Max(s.arvl_time) arvl_time,    f.airline_id,   l.flight_num,    l.seat_num,	    l.seat_class,l.from_arpt, ap.city from_city,  l.to_arpt, ap2.city to_city,  p.firstname,   p.lastname FROM Accounts a   JOIN Reservations r USING (username) JOIN Legs l ON (r.id = l.rid)  JOIN  Passengers p ON (l.pid = p.id)   JOIN   Flight f ON f.flight_num = l.flight_num   JOIN Airports ap ON l.from_arpt = ap.id JOIN Airports ap2 ON l.to_arpt=ap2.id JOIN Stops s ON f.flight_num=s.flight_num   WHERE a.username='" + username + "'group by r.date ;";
+	String str = "SELECT     a.username,    r.id rid,    r.date,    r.booking_fee,	    r.total_fare,    l.dept_date,	    MAX(s.dept_time) dept_time,	    l.arvl_date,    Max(s.arvl_time) arvl_time,    f.airline_id,   l.flight_num,    l.seat_num,	    l.seat_class,l.from_arpt, ap.city from_city,  l.to_arpt, ap2.city to_city,  p.firstname,   p.lastname FROM Accounts a   JOIN Reservations r USING (username) JOIN Legs l ON (r.id = l.rid)  JOIN  Passengers p ON (l.pid = p.id)   JOIN   Flight f ON f.flight_num = l.flight_num   JOIN Airports ap ON l.from_arpt = ap.id JOIN Airports ap2 ON l.to_arpt=ap2.id JOIN Stops s ON f.flight_num=s.flight_num   WHERE a.username='" + username + "' group by r.date ;";
 
 	//Run the query against the database.
 	ResultSet result = stmt.executeQuery(str);
