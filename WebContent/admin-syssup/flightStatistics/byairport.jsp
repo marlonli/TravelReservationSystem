@@ -69,13 +69,14 @@
 	</div>
 	</nav>
 	<div class="container container-padding">
-		<h3>Revenue</h3>
+		<h2>Flight Statistics</h2>
 		<hr>
 		<div class="col-lg-3">
 			<div class="list-group">
-				<a href="revenue.jsp" class="list-group-item">By flight</a> 
-				<a href="byDestination.jsp" class="list-group-item">By destination city</a> 
-				<a href="byCustomer.jsp" class="list-group-item active">By customer</a>
+				<a href="flights.jsp" class="list-group-item">All flights</a> 
+				<a href="activeflights.jsp" class="list-group-item">Active flights</a> 
+				<a href="byairport.jsp"class="list-group-item active">Find flights by airport</a> 
+				<a href="flightstatus.jsp"class="list-group-item">Flight status</a>
 			</div>
 		</div>
         <div class='col-lg-9'>
@@ -102,7 +103,7 @@
 				Statement stmt = con.createStatement();
 				
 				//Make a SELECT query from the table Reservation
-				String str = "SELECT r.username Customer, SUM(r.total_fare) Revenue  FROM Reservations r, Accounts a where r.username=a.username group by r.username order by Revenue DESC";
+				String str = "SELECT l.to_arpt Destination, SUM(r.total_fare) Revenue From Legs l JOIN Reservations r ON r.id = l.rid GROUP BY l.to_arpt";
 				//Run the query against the database.
 				
 				ResultSet result = stmt.executeQuery(str);
@@ -121,7 +122,7 @@
 				out.print("<thead>");
 				out.print("<tr>");
 				//make a column
-				out.print("<th>Customer</th>");
+				out.print("<th>Destination</th>");
 				out.print("<th>Revenue(US Dollar)</th>");
 				
 				out.print("</tr>");
@@ -136,7 +137,7 @@
 					//out.print("<tr>");
 					out.print("<td>");
 					rowNbr++;
-					out.print(result.getString("Customer"));
+					out.print(result.getString("Destination"));
 					out.print("</td>");
 
 					//out.print("<td>");
@@ -151,7 +152,9 @@
 					
 					//make a row
 					out.print("</tr>");
-
+					
+					//String columnValue = rs.getString(rowNbr);
+					//out.print(columnValue + " ");
 			
 		
 

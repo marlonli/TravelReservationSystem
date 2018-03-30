@@ -69,13 +69,14 @@
 	</div>
 	</nav>
 	<div class="container container-padding">
-		<h3>Revenue</h3>
+		<h2>Flight Statistics 1: On Time 0: Delay</h2>
 		<hr>
 		<div class="col-lg-3">
 			<div class="list-group">
-				<a href="revenue.jsp" class="list-group-item">By flight</a> 
-				<a href="byDestination.jsp" class="list-group-item">By destination city</a> 
-				<a href="byCustomer.jsp" class="list-group-item active">By customer</a>
+				<a href="flights.jsp" class="list-group-item">All flights</a> 
+				<a href="activeflights.jsp" class="list-group-item">Active flights</a> 
+				<a href="byairport.jsp"class="list-group-item">Find flights by airport</a> 
+				<a href="flightstatus.jsp"class="list-group-item active">Flight status</a>
 			</div>
 		</div>
         <div class='col-lg-9'>
@@ -102,7 +103,7 @@
 				Statement stmt = con.createStatement();
 				
 				//Make a SELECT query from the table Reservation
-				String str = "SELECT r.username Customer, SUM(r.total_fare) Revenue  FROM Reservations r, Accounts a where r.username=a.username group by r.username order by Revenue DESC";
+				String str = "SELECT f.airline_id, h.flight_num, h.flight_date, h.flight_stat From Flight f, History h where h.flight_num=f.flight_num order by f.airline_id;";
 				//Run the query against the database.
 				
 				ResultSet result = stmt.executeQuery(str);
@@ -116,13 +117,14 @@
 				   //ResultSetMetaData rsmd = str.getMetaData();
 				   //System.out.println("querying "+ str);
 				   //int columnsNumber = rsmd.getColumnCount();
-				
 				out.print("<table class='table table-hover' id='table-Revenue'>");
 				out.print("<thead>");
 				out.print("<tr>");
 				//make a column
-				out.print("<th>Customer</th>");
-				out.print("<th>Revenue(US Dollar)</th>");
+				out.print("<th>Airline</th>");
+				out.print("<th>Flight Number</th>");
+				out.print("<th>Date</th>");
+				out.print("<th>Flight Status</th>");
 				
 				out.print("</tr>");
 				out.print("</thead>");
@@ -136,7 +138,7 @@
 					//out.print("<tr>");
 					out.print("<td>");
 					rowNbr++;
-					out.print(result.getString("Customer"));
+					out.print(result.getString("f.airline_id"));
 					out.print("</td>");
 
 					//out.print("<td>");
@@ -144,14 +146,23 @@
 					//out.print("</td>");
 
 					out.print("<td>");
-					out.print(result.getString("Revenue"));
+					out.print(result.getString("h.flight_num"));
 					out.print("</td>");
 
+					out.print("<td>");
+					out.print(result.getString("h.flight_date"));
+					out.print("</td>");
+					
+					out.print("<td>");
+					out.print(result.getString("h.flight_stat"));
+					out.print("</td>");
 				
 					
 					//make a row
 					out.print("</tr>");
-
+					
+					//String columnValue = rs.getString(rowNbr);
+					//out.print(columnValue + " ");
 			
 		
 
