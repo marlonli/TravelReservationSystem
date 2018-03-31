@@ -51,8 +51,8 @@
 					data-toggle="dropdown" role="button" aria-expanded="false">Sales<span
 						class="caret"></span></a>
 					<ul class="dropdown-menu" role="menu">
-						<li><a href="salesReport.jsp">Sales Report</a></li>
-						<li><a href="revenue.jsp">Revenue</a></li>
+						<li><a href="../sales/salesReport.jsp">Sales Report</a></li>
+						<li><a href="../sales/revenue.jsp">Revenue</a></li>
 					</ul></li>
 				<li class="dropdown"><a href="#" class="dropdown-toggle"
 					data-toggle="dropdown" role="button" aria-expanded="true">Statistics
