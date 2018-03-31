@@ -84,12 +84,18 @@ try {
 	out.print("<thead>");
 	out.print("<tr>");
 	//make a column
-	out.print("<th>#</th>");
+	out.print("<th>#</th>");  
 	out.print("<th>Flight Number </th>");
-	out.print("<th>Departure City</th>");
-	out.print("<th>Destination City</th>");
-	out.print("<th>Departure Date</th>");
-	out.print("<th>Arrival Date</th>");
+	out.print("<th>Departure date</th>");
+	out.print("<th>Departure time</th>");
+	out.print("<th>From city</th>");
+	out.print("<th>From airport</th>");
+	out.print("<th>seat number</th>");
+	out.print("<th>seat class</th>");
+	out.print("<th>arrival date</th>");
+	out.print("<th>arrival time</th>");
+	out.print("<th>To city</th>");
+	out.print("<th>To airport</th>");
 	out.print("</th>");
 	out.print("</tr>");
 	out.print("</thead>");
@@ -112,20 +118,44 @@ try {
 	
 	
 	out.print("<td>");
+	out.print(result.getString("dept_date"));
+	out.print("</td>");		
+	
+	
+	out.print("<td>");
+	out.print(result.getString("dept_time"));
+	out.print("</td>");		
+	
+	out.print("<td>");
 	out.print(result.getString("from_city"));
 	out.print("</td>");		
 	
+	out.print("<td>");
+	out.print(result.getString("from_arpt"));
+	out.print("</td>");		
+	
+	out.print("<td>");
+	out.print(result.getString("seat_num"));
+	out.print("</td>");		
+	
+	out.print("<td>");
+	out.print(result.getString("seat_class"));
+	out.print("</td>");		
+	
+	out.print("<td>");
+	out.print(result.getString("arvl_date"));
+	out.print("</td>");		
+	
+	out.print("<td>");
+	out.print(result.getString("arvl_time"));
+	out.print("</td>");		
 	
 	out.print("<td>");
 	out.print(result.getString("to_city"));
 	out.print("</td>");		
 	
 	out.print("<td>");
-	out.print(result.getString("dept_date"));
-	out.print("</td>");		
-	
-	out.print("<td>");
-	out.print(result.getString("arvl_date"));
+	out.print(result.getString("to_arpt"));
 	out.print("</td>");		
 	
 	out.print("</tr>");	
