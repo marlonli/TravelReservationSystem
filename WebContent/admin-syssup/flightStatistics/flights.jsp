@@ -14,7 +14,7 @@
 <link rel="stylesheet" type="text/css"
 	href="../../css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="../../css/main.css">
-<title>Revenue</title>
+<title>All flights</title>
 </head>
 <body>
 	<%
@@ -49,8 +49,8 @@
 					data-toggle="dropdown" role="button" aria-expanded="false">Sales<span
 						class="caret"></span></a>
 					<ul class="dropdown-menu" role="menu">
-						<li><a href="salesReport.jsp">Sales Report</a></li>
-						<li><a href="revenue.jsp">Revenue</a></li>
+						<li><a href="../sales/salesReport.jsp">Sales Report</a></li>
+						<li><a href="../sales/revenue.jsp">Revenue</a></li>
 					</ul></li>
 				<li class="dropdown"><a href="#" class="dropdown-toggle"
 					data-toggle="dropdown" role="button" aria-expanded="true">Statistics
@@ -69,7 +69,7 @@
 	</div>
 	</nav>
 	<div class="container container-padding">
-		<h2>Flight Statistics</h2>
+		<h2>All Flights</h2>
 		<hr>
 		<div class="col-lg-3">
 			<div class="list-group">
@@ -103,7 +103,7 @@
 				Statement stmt = con.createStatement();
 				
 				//Make a SELECT query from the table Reservation
-				String str = "select f.airline_id Airline, f.flight_num FlightNumber, l.from_arpt Departure, l.to_arpt Arrival, f.working_days Workingdays, f.seats Seat, f.fares Fare From Flight f, Legs l where f.flight_num = l.flight_num order by f.airline_id";
+				String str = "select f.airline_id Airline, f.flight_num FlightNumber, l.from_arpt Departure, l.to_arpt Arrival, f.working_days Workingdays, f.seats Seat, f.fares Fare From Flight f, Legs l where f.flight_num = l.flight_num group by f.flight_num order by f.airline_id ";
 				//Run the query against the database.
 				
 				ResultSet result = stmt.executeQuery(str);
@@ -186,6 +186,7 @@
 				con.close();
 
 			} catch (Exception e) {
+				System.out.println(e);
 			}
 		%>
 </div>

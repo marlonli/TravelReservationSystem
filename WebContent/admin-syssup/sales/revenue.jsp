@@ -149,7 +149,7 @@
 					out.print("</td>");
 
 					out.print("<td>");
-					out.print(result.getString("Revenue"));
+					out.print(String.format("%.2f", Float.parseFloat(result.getString("Revenue"))));
 					out.print("</td>");
 
 				
@@ -170,6 +170,7 @@
 				con.close();
 
 			} catch (Exception e) {
+				System.out.println(e);
 			}
 		%>
 </div>

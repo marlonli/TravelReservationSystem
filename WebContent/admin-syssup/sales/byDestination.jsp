@@ -102,7 +102,7 @@
 				Statement stmt = con.createStatement();
 				
 				//Make a SELECT query from the table Reservation
-				String str = "SELECT l.to_arpt Destination, SUM(r.total_fare) Revenue From Legs l JOIN Reservations r ON r.id = l.rid GROUP BY l.to_arpt";
+				String str = "SELECT a.city Destination, SUM(r.total_fare) Revenue From Legs l JOIN Reservations r ON r.id = l.rid JOIN Airports a ON l.to_arpt=a.id GROUP BY a.city";
 				//Run the query against the database.
 				
 				ResultSet result = stmt.executeQuery(str);
@@ -144,7 +144,7 @@
 					//out.print("</td>");
 
 					out.print("<td>");
-					out.print(result.getString("Revenue"));
+					out.print(String.format("%.2f", Float.parseFloat(result.getString("Revenue"))));
 					out.print("</td>");
 
 				
