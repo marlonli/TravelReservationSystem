@@ -102,8 +102,7 @@
 
 				//Make a SELECT query from the table Customers
 
-				String str = "SELECT r.date, r.total_fare, SUM(CASE WHEN [Month] = 01 THEN r.total_fare ELSE 0 END) AS Jan,SUM(CASE WHEN [Month] = 02 THEN r.total_fare ELSE 0 END) AS Feb,SUM(CASE WHEN [Month] = 03 THEN r.total_fare ELSE 0 END) AS Mar, SUM(CASE WHEN [Month] = 04 THEN r.total_fare ELSE 0 END) AS Apr, SUM(CASE WHEN [Month] = 05 THEN r.total_fare ELSE 0 END) AS May, SUM(CASE WHEN [Month] = 06 THEN r.total_fare ELSE 0 END) AS Jun, SUM(CASE WHEN [Month] = 07 THEN r.total_fare ELSE 0 END) AS Jul, SUM(CASE WHEN [Month] = 08 THEN r.total_fare ELSE 0 END) AS Aug, SUM(CASE WHEN [Month] = 09 THEN r.total_fare ELSE 0 END) AS Sep, SUM(CASE WHEN [Month] = 10 THEN r.total_fare ELSE 0 END) AS Oct, SUM(CASE WHEN [Month] = 11 THEN r.total_fare ELSE 0 END) AS Nov, SUM(CASE WHEN [Month] = 12 THEN r.total_fare ELSE 0 END) AS Dec, SUM(r.total_fare) AS Total, FROM Reservation r";
-
+				String str = "SELECT  r.id as reservation_id, r.date, r.username, c.firstname, c.lastname, r.total_fare FROM Reservations r JOIN Own o USING (username) JOIN Customers c USING (ssn) where date like '" + month + "-_%_'";
 				//Run the query against the database.
 				ResultSet result = stmt.executeQuery(str);
 
@@ -113,26 +112,26 @@
 				out.print("<thead>");
 				out.print("<tr>");
 				//make a column
-				out.print("<th>#</th>");
 				//out.print("<th>Account name</th>");
 
-				out.print("<th>customer_ssn</th>");
-				out.print("<th>booking_fee</th>");
+				out.print("<th>Date</th>");
+				out.print("<th>Username</th>");
+				out.print("<th>First name</th>");
+				out.print("<th>Last name</th>");
+				out.print("<th>Total fare</th>");
 				out.print("</th>");
 				
 				out.print("</tr>");
 				out.print("</thead>");
 
 				//parse out the results
-				int rowNbr = 0;
 				out.print("<tbody>");
 				while (result.next()) {
 					//make a row
 					//out.print("<tr>");
-					out.print("<tr class='clickable-row' id='" + result.getString("ssn") + "'>");
-					rowNbr++;
+					out.print("<tr>");
 					out.print("<td>");
-					out.print(rowNbr);
+					out.print(result.getString("date"));
 					out.print("</td>");
 
 					//out.print("<td>");
@@ -142,9 +141,17 @@
 					out.print("<td>");
 					out.print(result.getString("username"));
 					out.print("</td>");
+					
+					out.print("<td>");
+					out.print(result.getString("firstname"));
+					out.print("</td>");
+					
+					out.print("<td>");
+					out.print(result.getString("lastname"));
+					out.print("</td>");
 
 					out.print("<td>");
-					out.print(result.getString("booking_fee"));
+					out.print(String.format("%.2f", Float.parseFloat(result.getString("total_fare"))));
 					out.print("</td>");
 
 					//out.print("<td><input class='delete-button' type='button' value='delete' onclick='submitter("+ result.getString("ad_id") + ", 1)'/></td>");
