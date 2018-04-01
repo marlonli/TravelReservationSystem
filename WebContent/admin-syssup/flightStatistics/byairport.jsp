@@ -18,9 +18,10 @@
 </head>
 <body>
 	<%
-		String username = (String) session.getAttribute("username");
-		System.out.println("username " + username);
-		if (username == null || "".equals(username)) {
+	String username = (String) session.getAttribute("username");
+    String flight_num = request.getParameter("flight_num");
+	System.out.println("username " + username);
+	if (username == null || "".equals(username)) {
 	%>
 	<script type="text/javascript">
 		alert("Session expired, please login first");
@@ -70,6 +71,17 @@
 	</nav>
 	<div class="container container-padding">
 		<h2>Flight Statistics</h2>
+				<form class="form-horizontal">
+		<fieldset>
+		<div class="form-group">
+	      <label for="inputFlight" class="col-lg-2 control-label">Search by Airport</label>
+	      <div class="col-lg-2">
+	        <input type="text" class="form-control" id="inputFlight" placeholder="Search by Airport">
+	      </div>
+	      <a href="#" class="btn btn-default" id='search'>Search</a>
+	    </div>
+	    </fieldset>
+	    </form>
 		<hr>
 		<div class="col-lg-3">
 			<div class="list-group">
@@ -103,7 +115,7 @@
 				Statement stmt = con.createStatement();
 				
 				//Make a SELECT query from the table Reservation
-				String str = "SELECT l.to_arpt Destination, SUM(r.total_fare) Revenue From Legs l JOIN Reservations r ON r.id = l.rid GROUP BY l.to_arpt";
+				String str = "select s.arpt_id, f.airline_id Airline, f.flight_num FlightNumber, s.dept_time, s.arvl_time, f.working_days Workingdays, f.seats Seat, f.fares Fare  From Flight f,Stops s, Legs l where f.flight_num = l.flight_num and s.flight_num=l.flight_num and s.arpt_id = '"+ flight_num +"'group by FlightNumber";
 				//Run the query against the database.
 				
 				ResultSet result = stmt.executeQuery(str);
@@ -122,8 +134,14 @@
 				out.print("<thead>");
 				out.print("<tr>");
 				//make a column
-				out.print("<th>Destination</th>");
-				out.print("<th>Revenue(US Dollar)</th>");
+				out.print("<th>Airport ID</th>");
+				out.print("<th>Airline</th>");
+				out.print("<th>Flight Number</th>");
+				out.print("<th>Departure Time</th>");
+				out.print("<th>Arrival Time</th>");
+				out.print("<th>Working Days</th>");
+				out.print("<th>Seats</th>");
+				out.print("<th>Fare</th>");
 				
 				out.print("</tr>");
 				out.print("</thead>");
@@ -137,7 +155,7 @@
 					//out.print("<tr>");
 					out.print("<td>");
 					rowNbr++;
-					out.print(result.getString("Destination"));
+					out.print(result.getString("s.arpt_id"));
 					out.print("</td>");
 
 					//out.print("<td>");
@@ -145,10 +163,33 @@
 					//out.print("</td>");
 
 					out.print("<td>");
-					out.print(result.getString("Revenue"));
+					out.print(result.getString("Airline"));
 					out.print("</td>");
 
-				
+					out.print("<td>");
+					out.print(result.getString("FlightNumber"));
+					out.print("</td>");
+
+					out.print("<td>");
+					out.print(result.getString("s.dept_time"));
+					out.print("</td>");
+
+					out.print("<td>");
+					out.print(result.getString("s.arvl_time"));
+					out.print("</td>");
+
+					out.print("<td>");
+					out.print(result.getString("Workingdays"));
+					out.print("</td>");
+
+					out.print("<td>");
+					out.print(result.getString("Seat"));
+					out.print("</td>");
+
+					out.print("<td>");
+					out.print(result.getString("Fare"));
+					out.print("</td>");
+
 					
 					//make a row
 					out.print("</tr>");
@@ -171,4 +212,17 @@
 </div>
 </div>
 </body>
+<script type="text/javascript">
+$(document).ready(function() {
+	// get current URL path and assign 'active' class
+	var pathname = window.location.pathname;
+	path = pathname.substr(pathname.lastIndexOf('/') + 1);
+	$('.nav:first > li > a[href="' + path + '"]').parent().addClass('active');
+	
+	//Select a month
+	$( "#search" ).click(function() {
+		  $(location).attr('href','byairport.jsp?flight_num=' + $('#inputFlight').val());
+		});
+})
+</script>
 </html>

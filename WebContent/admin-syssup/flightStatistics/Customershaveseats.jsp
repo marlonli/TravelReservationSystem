@@ -19,6 +19,7 @@
 <body>
 	<%
 		String username = (String) session.getAttribute("username");
+	    String flight_num = request.getParameter("flight_num");
 		System.out.println("username " + username);
 		if (username == null || "".equals(username)) {
 	%>
@@ -70,6 +71,17 @@
 	</nav>
 	<div class="container container-padding">
 		<h2>Reservations</h2>
+		<form class="form-horizontal">
+		<fieldset>
+		<div class="form-group">
+	      <label for="inputFlight" class="col-lg-2 control-label">Give a Flight number</label>
+	      <div class="col-lg-2">
+	        <input type="text" class="form-control" id="inputFlight" placeholder="Give a Flight number">
+	      </div>
+	      <a href="#" class="btn btn-default" id='search'>Search</a>
+	    </div>
+	    </fieldset>
+	    </form>
 		<hr>
 		<div class="col-lg-3">
 			<div class="list-group">
@@ -101,7 +113,7 @@
 				Statement stmt = con.createStatement();
 				
 				//Make a SELECT query from the table Reservation
-				String flightnumber = "SELECT l.flight_num, p.firstname, p.lastname, l.seat_num, l.seat_class FROM Legs l JOIN Passengers p ON l.pid=p.id order by l.flight_num";
+				String flightnumber = "SELECT l.flight_num, p.firstname, p.lastname, l.seat_num, l.seat_class FROM Legs l JOIN Passengers p ON l.pid=p.id where l.flight_num ="+ flight_num;
 				//Run the query against the database.				
 				ResultSet result = stmt.executeQuery(flightnumber);
 				// #####################################
@@ -178,9 +190,23 @@
 				con.close();
 
 			} catch (Exception e) {
+				System.out.println(e);
 			}
 		%>
 </div>
 </div>
 </body>
+<script type="text/javascript">
+$(document).ready(function() {
+	// get current URL path and assign 'active' class
+	var pathname = window.location.pathname;
+	path = pathname.substr(pathname.lastIndexOf('/') + 1);
+	$('.nav:first > li > a[href="' + path + '"]').parent().addClass('active');
+	
+	//Select a month
+	$( "#search" ).click(function() {
+		  $(location).attr('href','Customershaveseats.jsp?flight_num=' + $('#inputFlight').val());
+		});
+})
+</script>
 </html>	
